@@ -1,5 +1,5 @@
 {
-    "game_version": "0.6.0.0",
+    "game_version": "0.7.1.0",
     "transports": [
         {
             "id": "FlatConveyorT3",
@@ -8,18 +8,18 @@
             "next_tier": "",
             "maintenance_cost_units": "",
             "maintenance_cost_quantity": 0,
-            "electricity_consumed": 160,
+            "electricity_consumed": 80,
             "throughput_per_second": 7.5,
-            "length_per_cost": 7,
+            "length_per_cost": 0,
             "icon_path": "Assets/Unity/Generated/Icons/Transport/FlatConveyorT3.png",
             "build_costs": [
                 {
                     "product": "Construction Parts III",
-                    "quantity": 4
+                    "quantity": 56
                 },
                 {
                     "product": "Rubber",
-                    "quantity": 6
+                    "quantity": 84
                 }
             ]
         },
@@ -30,40 +30,40 @@
             "next_tier": "FlatConveyorT3",
             "maintenance_cost_units": "",
             "maintenance_cost_quantity": 0,
-            "electricity_consumed": 100,
+            "electricity_consumed": 40,
             "throughput_per_second": 3.330078,
-            "length_per_cost": 7,
+            "length_per_cost": 0,
             "icon_path": "Assets/Unity/Generated/Icons/Transport/FlatConveyorT2.png",
             "build_costs": [
                 {
                     "product": "Construction Parts III",
-                    "quantity": 2
+                    "quantity": 28
                 },
                 {
                     "product": "Rubber",
-                    "quantity": 4
+                    "quantity": 56
                 }
             ]
         },
         {
             "id": "FlatConveyorT1",
-            "name": "Flat conveyor",
+            "name": "Flat conveyor I",
             "category": "",
             "next_tier": "FlatConveyorT2",
             "maintenance_cost_units": "",
             "maintenance_cost_quantity": 0,
-            "electricity_consumed": 70,
+            "electricity_consumed": 20,
             "throughput_per_second": 0.9960938,
-            "length_per_cost": 7,
+            "length_per_cost": 0,
             "icon_path": "Assets/Unity/Generated/Icons/Transport/FlatConveyorT1.png",
             "build_costs": [
                 {
                     "product": "Construction Parts II",
-                    "quantity": 2
+                    "quantity": 28
                 },
                 {
                     "product": "Rubber",
-                    "quantity": 2
+                    "quantity": 28
                 }
             ]
         },
@@ -74,18 +74,18 @@
             "next_tier": "",
             "maintenance_cost_units": "",
             "maintenance_cost_quantity": 0,
-            "electricity_consumed": 160,
+            "electricity_consumed": 80,
             "throughput_per_second": 7.5,
-            "length_per_cost": 7,
+            "length_per_cost": 0,
             "icon_path": "Assets/Unity/Generated/Icons/Transport/LooseMaterialConveyorT3.png",
             "build_costs": [
                 {
                     "product": "Construction Parts III",
-                    "quantity": 4
+                    "quantity": 56
                 },
                 {
                     "product": "Rubber",
-                    "quantity": 6
+                    "quantity": 84
                 }
             ]
         },
@@ -96,40 +96,40 @@
             "next_tier": "LooseMaterialConveyorT3",
             "maintenance_cost_units": "",
             "maintenance_cost_quantity": 0,
-            "electricity_consumed": 100,
+            "electricity_consumed": 40,
             "throughput_per_second": 3.330078,
-            "length_per_cost": 7,
+            "length_per_cost": 0,
             "icon_path": "Assets/Unity/Generated/Icons/Transport/LooseMaterialConveyorT2.png",
             "build_costs": [
                 {
                     "product": "Construction Parts III",
-                    "quantity": 2
+                    "quantity": 28
                 },
                 {
                     "product": "Rubber",
-                    "quantity": 4
+                    "quantity": 56
                 }
             ]
         },
         {
             "id": "LooseMaterialConveyor",
-            "name": "U-shape conveyor",
+            "name": "U-shape conveyor I",
             "category": "",
             "next_tier": "LooseMaterialConveyorT2",
             "maintenance_cost_units": "",
             "maintenance_cost_quantity": 0,
-            "electricity_consumed": 70,
+            "electricity_consumed": 20,
             "throughput_per_second": 0.9960938,
-            "length_per_cost": 7,
+            "length_per_cost": 0,
             "icon_path": "Assets/Unity/Generated/Icons/Transport/LooseMaterialConveyor.png",
             "build_costs": [
                 {
                     "product": "Construction Parts II",
-                    "quantity": 2
+                    "quantity": 28
                 },
                 {
                     "product": "Rubber",
-                    "quantity": 2
+                    "quantity": 28
                 }
             ]
         },
@@ -142,12 +142,34 @@
             "maintenance_cost_quantity": 0,
             "electricity_consumed": 0,
             "throughput_per_second": 2.001953,
-            "length_per_cost": 7,
+            "length_per_cost": 0,
             "icon_path": "Assets/Unity/Generated/Icons/Transport/MoltenMetalChannel.png",
             "build_costs": [
                 {
                     "product": "Construction Parts",
-                    "quantity": 2
+                    "quantity": 28
+                }
+            ]
+        },
+        {
+            "id": "PipeT4",
+            "name": "Pipe IV",
+            "category": "",
+            "next_tier": "",
+            "maintenance_cost_units": "",
+            "maintenance_cost_quantity": 0,
+            "electricity_consumed": 0,
+            "throughput_per_second": 15,
+            "length_per_cost": 0,
+            "icon_path": "Assets/Unity/Generated/Icons/Transport/PipeT4.png",
+            "build_costs": [
+                {
+                    "product": "Construction Parts III",
+                    "quantity": 42
+                },
+                {
+                    "product": "Steel",
+                    "quantity": 70
                 }
             ]
         },
@@ -155,17 +177,17 @@
             "id": "PipeT3",
             "name": "Pipe III",
             "category": "",
-            "next_tier": "",
+            "next_tier": "PipeT4",
             "maintenance_cost_units": "",
             "maintenance_cost_quantity": 0,
             "electricity_consumed": 0,
             "throughput_per_second": 7.5,
-            "length_per_cost": 7,
+            "length_per_cost": 0,
             "icon_path": "Assets/Unity/Generated/Icons/Transport/PipeT3.png",
             "build_costs": [
                 {
                     "product": "Construction Parts III",
-                    "quantity": 2
+                    "quantity": 28
                 }
             ]
         },
@@ -178,30 +200,30 @@
             "maintenance_cost_quantity": 0,
             "electricity_consumed": 0,
             "throughput_per_second": 3.330078,
-            "length_per_cost": 7,
+            "length_per_cost": 0,
             "icon_path": "Assets/Unity/Generated/Icons/Transport/PipeT2.png",
             "build_costs": [
                 {
                     "product": "Construction Parts II",
-                    "quantity": 2
+                    "quantity": 28
                 }
             ]
         },
         {
             "id": "PipeT1",
-            "name": "Pipe",
+            "name": "Pipe I",
             "category": "",
             "next_tier": "PipeT2",
             "maintenance_cost_units": "",
             "maintenance_cost_quantity": 0,
             "electricity_consumed": 0,
             "throughput_per_second": 0.9960938,
-            "length_per_cost": 7,
+            "length_per_cost": 0,
             "icon_path": "Assets/Unity/Generated/Icons/Transport/PipeT1.png",
             "build_costs": [
                 {
                     "product": "Construction Parts",
-                    "quantity": 2
+                    "quantity": 28
                 }
             ]
         },
@@ -214,12 +236,12 @@
             "maintenance_cost_quantity": 0,
             "electricity_consumed": 0,
             "throughput_per_second": 0.9960938,
-            "length_per_cost": 7,
+            "length_per_cost": 0,
             "icon_path": "Assets/Unity/Generated/Icons/Transport/Shaft.png",
             "build_costs": [
                 {
                     "product": "Construction Parts",
-                    "quantity": 2
+                    "quantity": 28
                 }
             ]
         }

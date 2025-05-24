@@ -38,7 +38,7 @@ namespace GenericToDataString
         {
             if (_currentIndent > _depth) { return null; }
             if (element == null || element is string)
-            {
+            { 
                 Write(FormatValue(element));
             }
             else if ((element is ValueType) && !element.GetType().FullName.StartsWith("Mafi."))

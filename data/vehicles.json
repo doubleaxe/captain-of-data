@@ -1,12 +1,12 @@
 {
-    "game_version": "0.6.0.0",
+    "game_version": "0.7.1.0",
     "vehicles": [
         {
             "name": "Truck",
             "costs": [
                 {
                     "product": "Vehicle Parts II",
-                    "quantity": 40
+                    "quantity": 30
                 },
                 {
                     "product": "Rubber",
@@ -23,7 +23,7 @@
             "costs": [
                 {
                     "product": "Vehicle Parts II",
-                    "quantity": 40
+                    "quantity": 30
                 },
                 {
                     "product": "Rubber",
@@ -61,11 +61,11 @@
             "costs": [
                 {
                     "product": "Vehicle Parts III",
-                    "quantity": 120
+                    "quantity": 90
                 },
                 {
                     "product": "Rubber",
-                    "quantity": 120
+                    "quantity": 90
                 },
                 {
                     "product": "Diesel",
@@ -78,11 +78,11 @@
             "costs": [
                 {
                     "product": "Vehicle Parts III",
-                    "quantity": 120
+                    "quantity": 90
                 },
                 {
                     "product": "Rubber",
-                    "quantity": 120
+                    "quantity": 90
                 },
                 {
                     "product": "Diesel",
@@ -95,11 +95,11 @@
             "costs": [
                 {
                     "product": "Rubber",
-                    "quantity": 120
+                    "quantity": 90
                 },
                 {
                     "product": "Vehicle Parts III",
-                    "quantity": 140
+                    "quantity": 110
                 },
                 {
                     "product": "Hydrogen",
@@ -112,11 +112,11 @@
             "costs": [
                 {
                     "product": "Rubber",
-                    "quantity": 120
+                    "quantity": 90
                 },
                 {
                     "product": "Vehicle Parts III",
-                    "quantity": 140
+                    "quantity": 110
                 },
                 {
                     "product": "Hydrogen",
@@ -129,11 +129,11 @@
             "costs": [
                 {
                     "product": "Vehicle Parts III",
-                    "quantity": 240
+                    "quantity": 180
                 },
                 {
                     "product": "Steel",
-                    "quantity": 120
+                    "quantity": 90
                 },
                 {
                     "product": "Diesel",
@@ -146,11 +146,11 @@
             "costs": [
                 {
                     "product": "Steel",
-                    "quantity": 120
+                    "quantity": 90
                 },
                 {
                     "product": "Vehicle Parts III",
-                    "quantity": 280
+                    "quantity": 220
                 },
                 {
                     "product": "Hydrogen",
@@ -163,11 +163,11 @@
             "costs": [
                 {
                     "product": "Vehicle Parts II",
-                    "quantity": 80
+                    "quantity": 60
                 },
                 {
                     "product": "Steel",
-                    "quantity": 40
+                    "quantity": 30
                 },
                 {
                     "product": "Diesel",
@@ -180,11 +180,11 @@
             "costs": [
                 {
                     "product": "Vehicle Parts II",
-                    "quantity": 80
+                    "quantity": 60
                 },
                 {
                     "product": "Steel",
-                    "quantity": 40
+                    "quantity": 30
                 },
                 {
                     "product": "Electronics",

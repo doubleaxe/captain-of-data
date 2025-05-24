@@ -1,5 +1,5 @@
 {
-    "game_version": "0.6.0.0",
+    "game_version": "0.7.1.0",
     "products": [
         {
             "id": "Product_Virtual_Electricity",
@@ -56,6 +56,20 @@
             "icon": "Maintenance3",
             "type": "VirtualProductProto",
             "icon_path": "Assets/Base/Products/Icons/Maintenance3.svg"
+        },
+        {
+            "id": "Product_Virtual_SpaceCrew",
+            "name": "Space crew",
+            "icon": "Spacecrew",
+            "type": "VirtualProductProto",
+            "icon_path": "Assets/Base/Products/Icons/SpaceCrew.svg"
+        },
+        {
+            "id": "Product_Virtual_SpaceResearchPoints",
+            "name": "Space research points",
+            "icon": "Spaceresearchpoints",
+            "type": "VirtualProductProto",
+            "icon_path": "Assets/Base/Products/Icons/SpaceResearchPoints.svg"
         },
         {
             "id": "Product_Wood",
@@ -296,6 +310,132 @@
             "icon_path": "Assets/Base/Products/Icons/Copper.svg"
         },
         {
+            "id": "Product_Bauxite",
+            "name": "Bauxite",
+            "icon": "Bauxite",
+            "type": "LooseProductProto",
+            "icon_path": "Assets/Base/Products/Icons/Bauxite.svg"
+        },
+        {
+            "id": "Product_BauxitePowder",
+            "name": "Bauxite powder",
+            "icon": "Bauxitepowder",
+            "type": "LooseProductProto",
+            "icon_path": "Assets/Base/Products/Icons/BauxitePowder.svg"
+        },
+        {
+            "id": "Product_RedMud",
+            "name": "Red mud",
+            "icon": "Redmud",
+            "type": "FluidProductProto",
+            "icon_path": "Assets/Base/Products/Icons/RedMud.svg"
+        },
+        {
+            "id": "Product_HydratedAlumina",
+            "name": "Hydrated alumina",
+            "icon": "Hydratedalumina",
+            "type": "LooseProductProto",
+            "icon_path": "Assets/Base/Products/Icons/AluminaHydrated.svg"
+        },
+        {
+            "id": "Product_Alumina",
+            "name": "Alumina",
+            "icon": "Alumina",
+            "type": "LooseProductProto",
+            "icon_path": "Assets/Base/Products/Icons/Alumina.svg"
+        },
+        {
+            "id": "Product_AluminumScrap",
+            "name": "Aluminum scrap",
+            "icon": "Aluminumscrap",
+            "type": "LooseProductProto",
+            "icon_path": "Assets/Base/Products/Icons/AluminumScrap.svg"
+        },
+        {
+            "id": "Product_AluminumScrapPressed",
+            "name": "Aluminum scrap pressed",
+            "icon": "Aluminumscrappressed",
+            "type": "CountableProductProto",
+            "icon_path": "Assets/Base/Products/Icons/AluminumScrapPressed.svg"
+        },
+        {
+            "id": "Product_MoltenAluminum",
+            "name": "Molten aluminum",
+            "icon": "Moltenaluminum",
+            "type": "MoltenProductProto",
+            "icon_path": "Assets/Base/Products/Icons/AluminumMolten.svg"
+        },
+        {
+            "id": "Product_Aluminum",
+            "name": "Aluminum",
+            "icon": "Aluminum",
+            "type": "CountableProductProto",
+            "icon_path": "Assets/Base/Products/Icons/Aluminum.svg"
+        },
+        {
+            "id": "Product_TitaniumOre",
+            "name": "Titanium ore",
+            "icon": "Titaniumore",
+            "type": "LooseProductProto",
+            "icon_path": "Assets/Base/Products/Icons/TitaniumOre.svg"
+        },
+        {
+            "id": "Product_TitaniumOreCrushed",
+            "name": "Titanium ore crushed",
+            "icon": "Titaniumorecrushed",
+            "type": "LooseProductProto",
+            "icon_path": "Assets/Base/Products/Icons/TitaniumOreCrushed.svg"
+        },
+        {
+            "id": "Product_TitaniumSlag",
+            "name": "Titanium slag",
+            "icon": "Titaniumslag",
+            "type": "LooseProductProto",
+            "icon_path": "Assets/Base/Products/Icons/TitaniumSlag.svg"
+        },
+        {
+            "id": "Product_TitaniumChloride",
+            "name": "Titanium chloride",
+            "icon": "Titaniumchloride",
+            "type": "FluidProductProto",
+            "icon_path": "Assets/Base/Products/Icons/TitaniumChloride.svg"
+        },
+        {
+            "id": "Product_TitaniumChloridePure",
+            "name": "Titanium chloride (pure)",
+            "icon": "Titaniumchloridepure",
+            "type": "FluidProductProto",
+            "icon_path": "Assets/Base/Products/Icons/TitaniumChloridePure.svg"
+        },
+        {
+            "id": "Product_TitaniumSponge",
+            "name": "Titanium sponge",
+            "icon": "Titaniumsponge",
+            "type": "LooseProductProto",
+            "icon_path": "Assets/Base/Products/Icons/TitaniumSponge.svg"
+        },
+        {
+            "id": "Product_MoltenTitanium",
+            "name": "Molten titanium",
+            "icon": "Moltentitanium",
+            "type": "MoltenProductProto",
+            "icon_path": "Assets/Base/Products/Icons/TitaniumMolten.svg"
+        },
+        {
+            "id": "Product_MoltenTitaniumAlloy",
+            "name": "Molten titanium alloy",
+            "icon": "Moltentitaniumalloy",
+            "type": "MoltenProductProto",
+            "icon_path": "Assets/Base/Products/Icons/TitaniumAlloyMolten.svg"
+        },
+        {
+            "id": "Product_TitaniumAlloy",
+            "name": "Titanium alloy",
+            "icon": "Titaniumalloy",
+            "type": "CountableProductProto",
+            "icon_path": "Assets/Base/Products/Icons/Titanium.svg"
+        },
+        {
             "id": "Product_GoldOre",
             "name": "Gold ore",
             "icon": "Goldore",
@@ -388,8 +528,8 @@
         },
         {
             "id": "Product_UraniumOreCrushed",
-            "name": "Uranium ore crushed",
-            "icon": "Uraniumorecrushed",
+            "name": "Uranium ore powder",
+            "icon": "Uraniumorepowder",
             "type": "LooseProductProto",
             "icon_path": "Assets/Base/Products/Icons/UraniumOreCrushed.svg"
         },
@@ -989,6 +1129,20 @@
             "icon_path": "Assets/Base/Products/Icons/ConsumerElectronics.svg"
         },
         {
+            "id": "Product_LuxuryGoods",
+            "name": "Luxury goods",
+            "icon": "Luxurygoods",
+            "type": "CountableProductProto",
+            "icon_path": "Assets/Base/Products/Icons/LuxuryGoods.svg"
+        },
+        {
+            "id": "Product_ImportedGoods",
+            "name": "Imported goods",
+            "icon": "Importedgoods",
+            "type": "CountableProductProto",
+            "icon_path": "Assets/Base/Products/Icons/ImportedGoods.svg"
+        },
+        {
             "id": "Product_Antibiotics",
             "name": "Antibiotics",
             "icon": "Antibiotics",
@@ -1150,6 +1304,20 @@
             "icon_path": "Assets/Base/Products/Icons/LabEquipment4.svg"
         },
         {
+            "id": "Product_RailParts",
+            "name": "Rail Parts",
+            "icon": "RailParts",
+            "type": "CountableProductProto",
+            "icon_path": "Assets/Base/Products/Icons/RailParts.svg"
+        },
+        {
+            "id": "Product_OfficeSupplies",
+            "name": "Office Supplies",
+            "icon": "OfficeSupplies",
+            "type": "CountableProductProto",
+            "icon_path": "Assets/Base/Products/Icons/OfficeSupplies.svg"
+        },
+        {
             "id": "Product_Electronics",
             "name": "Electronics",
             "icon": "Electronics",
@@ -1176,6 +1344,13 @@
             "icon": "Electronics3",
             "type": "CountableProductProto",
             "icon_path": "Assets/Base/Products/Icons/Electronics3.svg"
+        },
+        {
+            "id": "Product_Electronics4",
+            "name": "Electronics IV",
+            "icon": "Electronics4",
+            "type": "CountableProductProto",
+            "icon_path": "Assets/Base/Products/Icons/Electronics4.svg"
         },
         {
             "id": "Product_Server",
@@ -1269,6 +1444,34 @@
             "icon_path": "Assets/Base/Products/Icons/MicrochipWafer4B.svg"
         },
         {
+            "id": "Product_Diamond",
+            "name": "Diamond",
+            "icon": "Diamond",
+            "type": "CountableProductProto",
+            "icon_path": "Assets/Base/Products/Icons/Diamond.svg"
+        },
+        {
+            "id": "Product_DiamondPaste",
+            "name": "Diamond paste",
+            "icon": "Diamondpaste",
+            "type": "CountableProductProto",
+            "icon_path": "Assets/Base/Products/Icons/DiamondPaste.svg"
+        },
+        {
+            "id": "Product_SapphireWafer",
+            "name": "Sapphire wafer",
+            "icon": "Sapphirewafer",
+            "type": "CountableProductProto",
+            "icon_path": "Assets/Base/Products/Icons/SapphireWafer.svg"
+        },
+        {
+            "id": "Product_Lens",
+            "name": "Lens",
+            "icon": "Lens",
+            "type": "CountableProductProto",
+            "icon_path": "Assets/Base/Products/Icons/Lens.svg"
+        },
+        {
             "id": "Product_SolarCell",
             "name": "Solar cell",
             "icon": "Solarcell",
@@ -1281,6 +1484,76 @@
             "icon": "Solarcellmono",
             "type": "CountableProductProto",
             "icon_path": "Assets/Base/Products/Icons/SolarCellMono.svg"
+        },
+        {
+            "id": "Product_CompositePanel",
+            "name": "Composite panel",
+            "icon": "Compositepanel",
+            "type": "CountableProductProto",
+            "icon_path": "Assets/Base/Products/Icons/CompositePanel.svg"
+        },
+        {
+            "id": "Product_CompositeBodyBasic",
+            "name": "Composite core basic",
+            "icon": "Compositecorebasic",
+            "type": "CountableProductProto",
+            "icon_path": "Assets/Base/Products/Icons/CompositeCore1.svg"
+        },
+        {
+            "id": "Product_CompositeCore",
+            "name": "Composite core",
+            "icon": "Compositecore",
+            "type": "CountableProductProto",
+            "icon_path": "Assets/Base/Products/Icons/CompositeCore2.svg"
+        },
+        {
+            "id": "Product_ChemicalFuel",
+            "name": "Chemical fuel",
+            "icon": "Chemicalfuel",
+            "type": "CountableProductProto",
+            "icon_path": "Assets/Base/Products/Icons/ChemicalFuel.svg"
+        },
+        {
+            "id": "Product_SpaceStationParts1",
+            "name": "Station parts (basic)",
+            "icon": "Stationpartsbasic",
+            "type": "CountableProductProto",
+            "icon_path": "Assets/Base/Products/Icons/SpaceStationParts1.svg"
+        },
+        {
+            "id": "Product_SpaceStationParts2",
+            "name": "Station parts",
+            "icon": "Stationparts",
+            "type": "CountableProductProto",
+            "icon_path": "Assets/Base/Products/Icons/SpaceStationParts2.svg"
+        },
+        {
+            "id": "Product_CrewSupplies",
+            "name": "Crew supplies",
+            "icon": "Crewsupplies",
+            "type": "CountableProductProto",
+            "icon_path": "Assets/Base/Products/Icons/CrewSupplies.svg"
+        },
+        {
+            "id": "Product_SpaceProbeParts",
+            "name": "Space probe parts",
+            "icon": "Spaceprobeparts",
+            "type": "CountableProductProto",
+            "icon_path": "Assets/Base/Products/Icons/SpaceProbeParts.svg"
+        },
+        {
+            "id": "Product_AsteroidBoosterParts",
+            "name": "Asteroid booster parts",
+            "icon": "Asteroidboosterparts",
+            "type": "CountableProductProto",
+            "icon_path": "Assets/Base/Products/Icons/AsteroidBoosterParts.svg"
+        },
+        {
+            "id": "Product_CompactReactor",
+            "name": "Compact reactor",
+            "icon": "Compactreactor",
+            "type": "CountableProductProto",
+            "icon_path": "Assets/Base/Products/Icons/CompactReactor.svg"
         },
         {
             "id": "Product_Oxygen",
