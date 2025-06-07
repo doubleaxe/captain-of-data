@@ -17677,7 +17677,7 @@
                         },
                         {
                             "name": "Core fuel",
-                            "quantity": 16
+                            "quantity": 8
                         }
                     ],
                     "outputs": [
@@ -17687,71 +17687,13 @@
                         },
                         {
                             "name": "Core fuel (spent)",
-                            "quantity": 16
+                            "quantity": 8
                         }
                     ]
                 },
                 {
                     "id": "FastBreederReactor1",
                     "name": "Fast breeder reactor 1",
-                    "duration": 15,
-                    "inputs": [
-                        {
-                            "name": "Water",
-                            "quantity": 384
-                        },
-                        {
-                            "name": "Core fuel",
-                            "quantity": 16
-                        },
-                        {
-                            "name": "Blanket fuel",
-                            "quantity": 1
-                        }
-                    ],
-                    "outputs": [
-                        {
-                            "name": "Steam (super)",
-                            "quantity": 384
-                        },
-                        {
-                            "name": "Core fuel (spent)",
-                            "quantity": 16
-                        },
-                        {
-                            "name": "Blanket fuel (enriched)",
-                            "quantity": 1
-                        }
-                    ]
-                },
-                {
-                    "id": "FastBreederReactor2",
-                    "name": "Fast breeder reactor 2",
-                    "duration": 240,
-                    "inputs": [
-                        {
-                            "name": "Water",
-                            "quantity": 384
-                        },
-                        {
-                            "name": "Core fuel",
-                            "quantity": 16
-                        }
-                    ],
-                    "outputs": [
-                        {
-                            "name": "Steam (super)",
-                            "quantity": 384
-                        },
-                        {
-                            "name": "Core fuel (spent)",
-                            "quantity": 16
-                        }
-                    ]
-                },
-                {
-                    "id": "FastBreederReactor3",
-                    "name": "Fast breeder reactor 3",
                     "duration": 60,
                     "inputs": [
                         {
@@ -17764,7 +17706,7 @@
                         },
                         {
                             "name": "Blanket fuel",
-                            "quantity": 1
+                            "quantity": 16
                         }
                     ],
                     "outputs": [
@@ -17778,10 +17720,134 @@
                         },
                         {
                             "name": "Blanket fuel (enriched)",
-                            "quantity": 1
+                            "quantity": 16
                         }
                     ]
-                }
+                },
+                {
+                    "id": "FastBreederReactor2",
+                    "name": "Fast breeder reactor 2",
+                    "duration": 60,
+                    "inputs": [
+                        {
+                            "name": "Water",
+                            "quantity": 96
+                        },
+                        {
+                            "name": "Core fuel",
+                            "quantity": 16
+                        },
+                        {
+                            "name": "Blanket fuel",
+                            "quantity": 48
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "name": "Steam (super)",
+                            "quantity": 96
+                        },
+                        {
+                            "name": "Core fuel (spent)",
+                            "quantity": 16
+                        },
+                        {
+                            "name": "Blanket fuel (enriched)",
+                            "quantity": 48
+                        }
+                    ]
+                },
+                {
+                    "id": "FastBreederReactor3",
+                    "name": "Fast breeder reactor 3",
+                    "duration": 60,
+                    "inputs": [
+                        {
+                            "name": "Water",
+                            "quantity": 96
+                        },
+                        {
+                            "name": "Core fuel",
+                            "quantity": 2
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "name": "Steam (super)",
+                            "quantity": 96
+                        },
+                        {
+                            "name": "Core fuel (spent)",
+                            "quantity": 2
+                        }
+                    ]
+                },
+                {
+                    "id": "FastBreederReactor4",
+                    "name": "Fast breeder reactor 4",
+                    "duration": 60,
+                    "inputs": [
+                        {
+                            "name": "Water",
+                            "quantity": 96
+                        },
+                        {
+                            "name": "Core fuel",
+                            "quantity": 4
+                        },
+                        {
+                            "name": "Blanket fuel",
+                            "quantity": 4
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "name": "Steam (super)",
+                            "quantity": 96
+                        },
+                        {
+                            "name": "Core fuel (spent)",
+                            "quantity": 4
+                        },
+                        {
+                            "name": "Blanket fuel (enriched)",
+                            "quantity": 4
+                        }
+                    ]
+                },
+                {
+                    "id": "FastBreederReactor5",
+                    "name": "Fast breeder reactor 5",
+                    "duration": 60,
+                    "inputs": [
+                        {
+                            "name": "Water",
+                            "quantity": 24
+                        },
+                        {
+                            "name": "Core fuel",
+                            "quantity": 4
+                        },
+                        {
+                            "name": "Blanket fuel",
+                            "quantity": 12
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "name": "Steam (super)",
+                            "quantity": 24
+                        },
+                        {
+                            "name": "Core fuel (spent)",
+                            "quantity": 4
+                        },
+                        {
+                            "name": "Blanket fuel (enriched)",
+                            "quantity": 12
+                        }
+                    ]
+                },
             ]
         },
         {
