@@ -1,0 +1,11 @@
+[Bb]in
+[Oo]bj
+.vs
+Thumbs.db
+Desktop.ini
+.DS_Store
+__MACOSX
+*~
+*.log
+*.bak
+*.old
