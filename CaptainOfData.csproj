@@ -5,6 +5,13 @@
     <Configurations>Debug;Release</Configurations>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <WarningLevel>9999</WarningLevel>
+    <Title>CaptainOfData Mod</Title>
+    <Version>2.0.0</Version>
+    <Authors>doubleaxe</Authors>
+    <Company />
+    <PackageProjectUrl>https://github.com/doubleaxe/captain-of-data</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/doubleaxe/captain-of-data</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -22,6 +29,13 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <OutputPath>bin\Release\</OutputPath>
   </PropertyGroup>
+
+	<ItemGroup>
+		<None Update="src\config\config.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Link>config.json</Link>
+		</None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
