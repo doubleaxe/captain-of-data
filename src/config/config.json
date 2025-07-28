@@ -1,3 +1,4 @@
 {
-  "OutputFolder": "C:\\Tmp"
+  "OutputFolder": "C:\\Tmp",
+  "DebugDump": false
 }

@@ -4,8 +4,8 @@ using Mafi.Core;
 using Mafi.Core.Game;
 using Mafi.Core.Mods;
 using Mafi.Core.Prototypes;
-using Mafi.Unity;
 using System;
+using System.Collections.Generic;
 
 namespace CaptainOfData
 {
@@ -17,9 +17,6 @@ namespace CaptainOfData
 		public int Version => 2;
 		public bool IsUiOnly => false;
 		public Option<IConfig> ModConfig => Option.None;
-
-		private ApplicationConfig config;
-		private DependencyResolver resolver;
 
 		public CaptainOfDataMod(CoreMod coreMod, BaseMod baseMod)
 		{
@@ -39,11 +36,27 @@ namespace CaptainOfData
 
 		public void Initialize(DependencyResolver resolver, bool gameWasLoaded)
 		{
-			config = ApplicationConfigSerializer.LoadSettings();
-
-			ProtosDb protosDb = resolver.Resolve<ProtosDb>();
-			AssetsDb assetsDb = resolver.Resolve<AssetsDb>();
+			ApplicationConfig config = ApplicationConfigSerializer.LoadSettings();
 			Log.Info("CaptainOfDataMod loaded");
+
+			List<DataExtractor> extractors = new List<DataExtractor>();
+			extractors.Add(new ProductDataExtractor(resolver, config));
+			extractors.Add(new MachineDataExtractor(resolver, config));
+
+			foreach (DataExtractor extractor in extractors)
+			{
+				using (extractor)
+				{
+					try
+					{
+						extractor.ExtractData();
+					}
+					catch (Exception e)
+					{
+						Log.Error($"{extractor.GetType().Name}: {e.Message}\n{e.StackTrace}");
+					}
+				}
+			}
 		}
 
 	}

@@ -7,19 +7,21 @@ using System.Reflection;
 
 namespace CaptainOfData
 {
-	class ApplicationConfig
+	internal class ApplicationConfig
 	{
 		public string OutputFolder { get; set; }
+		public bool DebugDump { get; set; }
 
 		public static ApplicationConfig defaultConfig()
 		{
 			ApplicationConfig defaultConfig = new ApplicationConfig();
-			defaultConfig.OutputFolder = "C:\\Tmp";
+			defaultConfig.OutputFolder = @"C:\Tmp";
+			defaultConfig.DebugDump = false;
 			return defaultConfig;
 		}
 	}
 
-	static class ApplicationConfigSerializer
+	static internal class ApplicationConfigSerializer
 	{
 		public static ApplicationConfig LoadSettings()
 		{
@@ -51,5 +53,5 @@ namespace CaptainOfData
 			return ApplicationConfig.defaultConfig();
 		}
 	}
-	
+
 }
