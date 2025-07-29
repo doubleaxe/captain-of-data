@@ -7,16 +7,22 @@ using System.Reflection;
 
 namespace CaptainOfData
 {
+	internal enum DebugDumpType
+	{
+		json,
+		txt
+	}
+
 	internal class ApplicationConfig
 	{
 		public string OutputFolder { get; set; }
-		public bool DebugDump { get; set; }
+		public DebugDumpType? DebugDump { get; set; }
 
 		public static ApplicationConfig defaultConfig()
 		{
 			ApplicationConfig defaultConfig = new ApplicationConfig();
 			defaultConfig.OutputFolder = @"C:\Tmp";
-			defaultConfig.DebugDump = false;
+			defaultConfig.DebugDump = null;
 			return defaultConfig;
 		}
 	}

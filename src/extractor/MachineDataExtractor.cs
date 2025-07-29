@@ -20,6 +20,7 @@ namespace CaptainOfData
 				jsonWriter.WriteValue(machine.Id.ToString());
 
 				DumpImage(machine.Id.ToString(), assetsDb.GetSharedTexture(machine.IconPath));
+				DumpObject(machine.Id.ToString(), machine);
 			}
 			jsonWriter.WriteEndArray();
 		}

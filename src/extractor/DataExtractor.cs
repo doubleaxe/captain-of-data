@@ -18,7 +18,9 @@ namespace CaptainOfData
 
 		private StreamWriter fileWriter;
 		protected JsonTextWriter jsonWriter;
-		protected StreamWriter dumpWriter;
+		private StreamWriter dumpWriter;
+		private JsonTextWriter jsonDumpWriter;
+		private JsonSerializer jsonDumpSerializer;
 		private readonly string imagesPath;
 		private bool imagesPathCreated = false;
 
@@ -36,12 +38,19 @@ namespace CaptainOfData
 			this.fileWriter.NewLine = "\n";
 			this.jsonWriter = new JsonTextWriter(this.fileWriter);
 			this.jsonWriter.Formatting = Formatting.Indented;
-			this.jsonWriter.Indentation = 2;
-			this.jsonWriter.IndentChar = ' ';
-			if (settings.DebugDump)
+			if (settings.DebugDump != null)
 			{
 				this.dumpWriter = new StreamWriter(Path.Combine(settings.OutputFolder, baseFileName + "-dump.txt"));
 				this.dumpWriter.NewLine = "\n";
+
+				if (settings.DebugDump == DebugDumpType.json)
+				{
+					this.jsonDumpWriter = new JsonTextWriter(this.dumpWriter);
+					this.jsonDumpWriter.Formatting = Formatting.Indented;
+
+					this.jsonDumpSerializer = new JsonSerializer();
+					this.jsonDumpSerializer.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+				}
 			}
 			imagesPath = Path.Combine(settings.OutputFolder, baseFileName + "-images");
 		}
@@ -50,14 +59,39 @@ namespace CaptainOfData
 
 		protected void DumpObject(string name, object element)
 		{
+			switch (settings.DebugDump)
+			{
+				case DebugDumpType.json:
+					DumpObjectJson(name, element);
+					break;
+				case DebugDumpType.txt:
+					DumpObjectTxt(name, element);
+					break;
+			}
+		}
+
+		private void DumpObjectTxt(string name, object element)
+		{
 			if (dumpWriter == null)
 				return;
-			var content = ObjectDumper.Dump(element);
+			string content = ObjectDumper.Dump(element);
 			dumpWriter.WriteLine(name);
 			dumpWriter.WriteLine("");
 			dumpWriter.WriteLine(content);
 			dumpWriter.WriteLine("");
 			dumpWriter.WriteLine("");
+		}
+
+		protected void DumpObjectJson(string name, object element)
+		{
+			if (jsonDumpWriter == null)
+				return;
+			jsonDumpWriter.WriteStartObject();
+			jsonDumpWriter.WritePropertyName("id");
+			jsonDumpWriter.WriteValue(name);
+			jsonDumpWriter.WritePropertyName("value");
+			jsonDumpSerializer.Serialize(jsonWriter, element);
+			jsonDumpWriter.WriteEndObject();
 		}
 
 		protected void DumpImage(string name, Texture2D image)
@@ -123,6 +157,11 @@ namespace CaptainOfData
 				fileWriter.Close();
 				fileWriter.Dispose();
 				fileWriter = null;
+			}
+			if (jsonDumpWriter != null)
+			{
+				jsonDumpWriter.Close();
+				jsonDumpWriter = null;
 			}
 			if (dumpWriter != null)
 			{
