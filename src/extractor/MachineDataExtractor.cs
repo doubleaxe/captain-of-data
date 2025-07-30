@@ -13,16 +13,16 @@ namespace CaptainOfData
 		public override void ExtractData()
 		{
 			//MaintenanceDepotProto is also MachineProto
-			IEnumerable<MachineProto> machines = protosDb.All<MachineProto>();
-			jsonWriter.WriteStartArray();
+			IEnumerable<MachineProto> machines = _protosDb.All<MachineProto>();
+			_jsonWriter.WriteStartArray();
 			foreach (MachineProto machine in machines)
 			{
-				jsonWriter.WriteValue(machine.Id.ToString());
+				_jsonWriter.WriteValue(machine.Id.ToString());
 
-				DumpImage(machine.Id.ToString(), assetsDb.GetSharedTexture(machine.IconPath));
+				DumpImage(machine.Id.ToString(), _assetsDb.GetSharedTexture(machine.IconPath));
 				DumpObject(machine.Id.ToString(), machine);
 			}
-			jsonWriter.WriteEndArray();
+			_jsonWriter.WriteEndArray();
 		}
 	}
 }

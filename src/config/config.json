@@ -1,4 +1,5 @@
 {
   "OutputFolder": "C:\\Tmp",
-  "DebugDump": null
+  "DebugDump": null,
+  "DebugDumpMaxDepth": 5
 }

@@ -12,15 +12,15 @@ namespace CaptainOfData
 
 		public override void ExtractData()
 		{
-			IEnumerable<ProductProto> products = protosDb.All<ProductProto>();
-			jsonWriter.WriteStartArray();
+			IEnumerable<ProductProto> products = _protosDb.All<ProductProto>();
+			_jsonWriter.WriteStartArray();
 			foreach (ProductProto product in products)
 			{
-				jsonWriter.WriteValue(product.Id.ToString());
+				_jsonWriter.WriteValue(product.Id.ToString());
 
-				DumpImage(product.Id.ToString(), assetsDb.GetSharedTexture(product.IconPath));
+				DumpImage(product.Id.ToString(), _assetsDb.GetSharedTexture(product.IconPath));
 			}
-			jsonWriter.WriteEndArray();
+			_jsonWriter.WriteEndArray();
 		}
 	}
 }

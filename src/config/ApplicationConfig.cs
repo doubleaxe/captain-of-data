@@ -17,12 +17,14 @@ namespace CaptainOfData
 	{
 		public string OutputFolder { get; set; }
 		public DebugDumpType? DebugDump { get; set; }
+		public int DebugDumpMaxDepth { get; set; }
 
-		public static ApplicationConfig defaultConfig()
+		public static ApplicationConfig DefaultConfig()
 		{
 			ApplicationConfig defaultConfig = new ApplicationConfig();
 			defaultConfig.OutputFolder = @"C:\Tmp";
 			defaultConfig.DebugDump = null;
+			defaultConfig.DebugDumpMaxDepth = 5;
 			return defaultConfig;
 		}
 	}
@@ -38,7 +40,7 @@ namespace CaptainOfData
 			if (!File.Exists(configFilePath))
 			{
 				Log.Error($"config.json doesn't exist: {configFilePath}");
-				return ApplicationConfig.defaultConfig();
+				return ApplicationConfig.DefaultConfig();
 			}
 
 			try
@@ -56,7 +58,7 @@ namespace CaptainOfData
 			{
 				Log.Error($"Error deserializing config.json: {ex.Message}");
 			}
-			return ApplicationConfig.defaultConfig();
+			return ApplicationConfig.DefaultConfig();
 		}
 	}
 

@@ -11,87 +11,56 @@ namespace CaptainOfData
 {
 	internal abstract class DataExtractor : IDisposable
 	{
-		protected readonly DependencyResolver resolver;
-		protected readonly ProtosDb protosDb;
-		protected readonly AssetsDb assetsDb;
-		protected readonly ApplicationConfig settings;
+		protected readonly DependencyResolver _resolver;
+		protected readonly ProtosDb _protosDb;
+		protected readonly AssetsDb _assetsDb;
+		protected readonly ApplicationConfig _settings;
 
-		private StreamWriter fileWriter;
-		protected JsonTextWriter jsonWriter;
-		private StreamWriter dumpWriter;
-		private JsonTextWriter jsonDumpWriter;
-		private JsonSerializer jsonDumpSerializer;
-		private readonly string imagesPath;
-		private bool imagesPathCreated = false;
-
-		private bool disposed = false;
+		private StreamWriter _fileWriter;
+		protected JsonTextWriter _jsonWriter;
+		private StreamWriter _dumpWriter;
+		private ObjectDumper _objectDumper;
+		private readonly string _imagesPath;
+		private bool _imagesPathCreated = false;
 
 		public DataExtractor(DependencyResolver resolver, ApplicationConfig settings, string baseFileName)
 		{
-			this.resolver = resolver;
+			this._resolver = resolver;
 			ProtosDb protosDb = resolver.Resolve<ProtosDb>();
 			AssetsDb assetsDb = resolver.Resolve<AssetsDb>();
-			this.protosDb = protosDb;
-			this.assetsDb = assetsDb;
-			this.settings = settings;
-			this.fileWriter = new StreamWriter(Path.Combine(settings.OutputFolder, baseFileName + ".json"));
-			this.fileWriter.NewLine = "\n";
-			this.jsonWriter = new JsonTextWriter(this.fileWriter);
-			this.jsonWriter.Formatting = Formatting.Indented;
+			this._protosDb = protosDb;
+			this._assetsDb = assetsDb;
+			this._settings = settings;
+			this._fileWriter = new StreamWriter(Path.Combine(settings.OutputFolder, baseFileName + ".json"));
+			this._fileWriter.NewLine = "\n";
+			this._jsonWriter = new JsonTextWriter(this._fileWriter);
+			this._jsonWriter.Formatting = Formatting.Indented;
 			if (settings.DebugDump != null)
 			{
-				this.dumpWriter = new StreamWriter(Path.Combine(settings.OutputFolder, baseFileName + "-dump.txt"));
-				this.dumpWriter.NewLine = "\n";
+				this._dumpWriter = new StreamWriter(Path.Combine(settings.OutputFolder, baseFileName + "-dump.txt"));
+				this._dumpWriter.NewLine = "\n";
 
-				if (settings.DebugDump == DebugDumpType.json)
+				switch (settings.DebugDump)
 				{
-					this.jsonDumpWriter = new JsonTextWriter(this.dumpWriter);
-					this.jsonDumpWriter.Formatting = Formatting.Indented;
-
-					this.jsonDumpSerializer = new JsonSerializer();
-					this.jsonDumpSerializer.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+					case DebugDumpType.json:
+						_objectDumper = new ObjectDumperTxt(_dumpWriter);
+						break;
+					case DebugDumpType.txt:
+						_objectDumper = new ObjectDumperJson(_dumpWriter, settings);
+						break;
 				}
 			}
-			imagesPath = Path.Combine(settings.OutputFolder, baseFileName + "-images");
+			_imagesPath = Path.Combine(settings.OutputFolder, baseFileName + "-images");
 		}
 
 		public abstract void ExtractData();
 
 		protected void DumpObject(string name, object element)
 		{
-			switch (settings.DebugDump)
+			if (_objectDumper != null)
 			{
-				case DebugDumpType.json:
-					DumpObjectJson(name, element);
-					break;
-				case DebugDumpType.txt:
-					DumpObjectTxt(name, element);
-					break;
+				_objectDumper.DumpObject(name, element);
 			}
-		}
-
-		private void DumpObjectTxt(string name, object element)
-		{
-			if (dumpWriter == null)
-				return;
-			string content = ObjectDumper.Dump(element);
-			dumpWriter.WriteLine(name);
-			dumpWriter.WriteLine("");
-			dumpWriter.WriteLine(content);
-			dumpWriter.WriteLine("");
-			dumpWriter.WriteLine("");
-		}
-
-		protected void DumpObjectJson(string name, object element)
-		{
-			if (jsonDumpWriter == null)
-				return;
-			jsonDumpWriter.WriteStartObject();
-			jsonDumpWriter.WritePropertyName("id");
-			jsonDumpWriter.WriteValue(name);
-			jsonDumpWriter.WritePropertyName("value");
-			jsonDumpSerializer.Serialize(jsonWriter, element);
-			jsonDumpWriter.WriteEndObject();
 		}
 
 		protected void DumpImage(string name, Texture2D image)
@@ -127,12 +96,12 @@ namespace CaptainOfData
 				bytes = readableTexture.EncodeToPNG();
 			}
 
-			if (!imagesPathCreated)
+			if (!_imagesPathCreated)
 			{
-				Directory.CreateDirectory(imagesPath);
-				imagesPathCreated = true;
+				Directory.CreateDirectory(_imagesPath);
+				_imagesPathCreated = true;
 			}
-			File.WriteAllBytes(Path.Combine(imagesPath, name + ".png"), bytes);
+			File.WriteAllBytes(Path.Combine(_imagesPath, name + ".png"), bytes);
 		}
 
 		public void Close()
@@ -142,35 +111,28 @@ namespace CaptainOfData
 
 		public void Dispose()
 		{
-			if (disposed)
+			if (_jsonWriter != null)
 			{
-				return;
+				_jsonWriter.Close();
+				_jsonWriter = null;
 			}
-
-			if (jsonWriter != null)
+			if (_fileWriter != null)
 			{
-				jsonWriter.Close();
-				jsonWriter = null;
+				_fileWriter.Close();
+				_fileWriter.Dispose();
+				_fileWriter = null;
 			}
-			if (fileWriter != null)
+			if (_objectDumper != null)
 			{
-				fileWriter.Close();
-				fileWriter.Dispose();
-				fileWriter = null;
+				_objectDumper.Dispose();
+				_objectDumper = null;
 			}
-			if (jsonDumpWriter != null)
+			if (_dumpWriter != null)
 			{
-				jsonDumpWriter.Close();
-				jsonDumpWriter = null;
+				_dumpWriter.Close();
+				_dumpWriter.Dispose();
+				_dumpWriter = null;
 			}
-			if (dumpWriter != null)
-			{
-				dumpWriter.Close();
-				dumpWriter.Dispose();
-				dumpWriter = null;
-			}
-
-			disposed = true;
 		}
 	}
 }
