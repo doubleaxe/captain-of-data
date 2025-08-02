@@ -18,7 +18,6 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>portable</DebugType>
     <DefineConstants>DEBUG</DefineConstants>
-    <OutputPath>bin\Debug\</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
@@ -27,7 +26,6 @@
     <DefineConstants></DefineConstants>
     <Optimize>true</Optimize>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <OutputPath>bin\Release\</OutputPath>
   </PropertyGroup>
 
 	<ItemGroup>

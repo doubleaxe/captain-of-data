@@ -43,10 +43,10 @@ namespace CaptainOfData
 				switch (settings.DebugDump)
 				{
 					case DebugDumpType.json:
-						_objectDumper = new ObjectDumperTxt(_dumpWriter);
+						_objectDumper = new ObjectDumperJson(_dumpWriter, settings.DebugDumpMaxDepth);
 						break;
 					case DebugDumpType.txt:
-						_objectDumper = new ObjectDumperJson(_dumpWriter, settings);
+						_objectDumper = new ObjectDumperTxt(_dumpWriter, settings.DebugDumpMaxDepth);
 						break;
 				}
 			}

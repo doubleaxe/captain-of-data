@@ -3,7 +3,7 @@ using System.IO;
 
 namespace CaptainOfData
 {
-	internal abstract class ObjectDumper : IDisposable
+	public abstract class ObjectDumper : IDisposable
 	{
 		protected StreamWriter _dumpWriter;
 

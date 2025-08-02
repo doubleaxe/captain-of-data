@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36202.13
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaptainOfData", "CaptainOfData.csproj", "{2F6C4E84-3F5C-0CE2-1699-C897C69CEBD5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaptainOfData", "src\CaptainOfData.csproj", "{2F6C4E84-3F5C-0CE2-1699-C897C69CEBD5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

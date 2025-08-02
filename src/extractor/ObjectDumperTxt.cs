@@ -205,15 +205,17 @@ namespace CaptainOfData
 		}
 	}
 
-	internal class ObjectDumperTxt : ObjectDumper
+	public class ObjectDumperTxt : ObjectDumper
 	{
-		public ObjectDumperTxt(StreamWriter dumpWriter) : base(dumpWriter)
+		private int _maxDepth;
+		public ObjectDumperTxt(StreamWriter dumpWriter, int maxDepth) : base(dumpWriter)
 		{
+			_maxDepth = maxDepth;
 		}
 
 		public override void DumpObject(string name, object element)
 		{
-			var content = ObjectDumperTxtImpl.Dump(element);
+			var content = ObjectDumperTxtImpl.Dump(element, _maxDepth);
 			_dumpWriter.WriteLine(name);
 			_dumpWriter.WriteLine("");
 			_dumpWriter.WriteLine(content);
