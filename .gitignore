@@ -9,3 +9,5 @@ __MACOSX
 *.log
 *.bak
 *.old
+tmp
+test

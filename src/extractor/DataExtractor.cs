@@ -1,4 +1,5 @@
 
+using CaptainOfData.dump;
 using Mafi;
 using Mafi.Core.Prototypes;
 using Mafi.Unity;
@@ -18,6 +19,8 @@ namespace CaptainOfData
 
 		private StreamWriter _fileWriter;
 		protected JsonTextWriter _jsonWriter;
+		protected JsonSerializer _jsonSerializer;
+
 		private StreamWriter _dumpWriter;
 		private ObjectDumper _objectDumper;
 		private readonly string _imagesPath;
@@ -35,6 +38,7 @@ namespace CaptainOfData
 			this._fileWriter.NewLine = "\n";
 			this._jsonWriter = new JsonTextWriter(this._fileWriter);
 			this._jsonWriter.Formatting = Formatting.Indented;
+			this._jsonSerializer = new JsonSerializer();
 			if (settings.DebugDump != null)
 			{
 				this._dumpWriter = new StreamWriter(Path.Combine(settings.OutputFolder, baseFileName + "-dump.txt"));

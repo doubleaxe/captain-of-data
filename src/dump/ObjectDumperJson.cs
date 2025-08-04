@@ -9,7 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 
-namespace CaptainOfData
+namespace CaptainOfData.dump
 {
 	internal abstract class WriteConverter : JsonConverter
 	{
@@ -44,6 +44,12 @@ namespace CaptainOfData
 			_contractResolver = jsonSerializer.ContractResolver;
 			_maxDepth = maxDepth;
 			_currentState = CurrentState.Waiting;
+		}
+
+		public void Reset()
+		{
+			_currentState = CurrentState.Waiting;
+			_currentStack.Clear();
 		}
 
 		private static bool IsEnumerable(Type objectType)
@@ -88,6 +94,8 @@ namespace CaptainOfData
 			JsonContract contract = _contractResolver.ResolveContract(objectType);
 			bool canConvert = canConvert = (contract is JsonContainerContract);
 			if (!canConvert) return false;
+
+			if (IsMafiToString(objectType) || IsOtherToString(objectType)) return true;
 
 			SerializationCallback onSerializing = OnSerializing;
 			if (!contract.OnSerializingCallbacks.Any(existingCallback => existingCallback.Method == onSerializing.Method))
@@ -143,10 +151,19 @@ namespace CaptainOfData
 				return;
 			}
 
+			object toSerialize = value;
+			MethodInfo asEnumerable = objectType.GetMethod("AsEnumerable");
+			if ((asEnumerable != null) && IsEnumerable(asEnumerable.ReturnType))
+			{
+				// Mafi.Collections.ImmutableCollections.ImmutableArray
+				object enumerable = asEnumerable.Invoke(value, new object[0]);
+				toSerialize = enumerable;
+			}
+
 			foreach (object alreadySerializing in _currentStack)
 			{
 				// using identity compare
-				if (ReferenceEquals(alreadySerializing, value))
+				if (ReferenceEquals(alreadySerializing, toSerialize))
 				{
 					// ReferenceLoopHandling.Ignore
 					return;
@@ -161,22 +178,11 @@ namespace CaptainOfData
 			}
 
 			_currentState = CurrentState.Serializing;
-			_currentStack.Push(value);
+			_currentStack.Push(toSerialize);
 			try
 			{
-				Log.Debug($"Serializing -> {currentDepth} : {objectType}");
-
-				MethodInfo asEnumerable = objectType.GetMethod("AsEnumerable");
-				if ((asEnumerable != null) && IsEnumerable(asEnumerable.ReturnType))
-				{
-					// Mafi.Collections.ImmutableCollections.ImmutableArray
-					object enumerable = asEnumerable.Invoke(value, new object[0]);
-					serializer.Serialize(writer, enumerable);
-				}
-				else
-				{
-					serializer.Serialize(writer, value);
-				}
+				Log.Debug($"Serializing -> {currentDepth} : {objectType}{(objectType == toSerialize.GetType() ? "" : " => " + toSerialize.GetType())}");
+				serializer.Serialize(writer, toSerialize);
 			}
 			finally
 			{
@@ -189,6 +195,7 @@ namespace CaptainOfData
 	{
 		private JsonTextWriter _jsonDumpWriter;
 		private JsonSerializer _jsonDumpSerializer;
+		private DepthLimitingConverter _converter;
 
 		public ObjectDumperJson(StreamWriter dumpWriter, int maxDepth) : base(dumpWriter)
 		{
@@ -198,12 +205,14 @@ namespace CaptainOfData
 
 			_jsonDumpSerializer = new JsonSerializer();
 			_jsonDumpSerializer.ReferenceLoopHandling = ReferenceLoopHandling.Serialize;
-			_jsonDumpSerializer.Converters.Add(new DepthLimitingConverter(_jsonDumpSerializer, maxDepth));
 			_jsonDumpSerializer.Error += delegate (object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
 			{
 				Log.Debug($"Cannot serialize {sender.GetType().FullName}");
 				args.ErrorContext.Handled = true;
 			};
+
+			_converter = new DepthLimitingConverter(_jsonDumpSerializer, maxDepth);
+			_jsonDumpSerializer.Converters.Add(_converter);
 		}
 
 		public override void Dispose()
@@ -222,6 +231,8 @@ namespace CaptainOfData
 
 		public override void DumpObject(string name, object element)
 		{
+			_converter.Reset();
+
 			_jsonDumpWriter.WriteStartObject();
 			_jsonDumpWriter.WritePropertyName("dump-id");
 			_jsonDumpWriter.WriteValue(name);
