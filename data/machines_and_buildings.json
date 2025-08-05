@@ -1,5 +1,5 @@
 {
-    "game_version": "0.7.1.0",
+    "game_version": "0.7.8.0",
     "machines_and_buildings": [
         {
             "id": "TurbineSuperPress",
@@ -267,7 +267,7 @@
                 {
                     "id": "PowerGeneratorT1",
                     "name": "PowerGeneratorT1",
-                    "duration": 0,
+                    "duration": 0.09960938,
                     "inputs": [
                         {
                             "name": "Mechanical power",
@@ -314,7 +314,7 @@
                 {
                     "id": "PowerGeneratorT2",
                     "name": "PowerGeneratorT2",
-                    "duration": 0,
+                    "duration": 0.09960938,
                     "inputs": [
                         {
                             "name": "Mechanical power",
@@ -2033,7 +2033,7 @@
                         },
                         {
                             "name": "Concrete slab",
-                            "quantity": 16
+                            "quantity": 12
                         }
                     ],
                     "outputs": [
@@ -2143,7 +2143,7 @@
                 {
                     "id": "VehicleParts1AssemblyT5",
                     "name": "Vehicle parts assembly (T5)",
-                    "duration": 7,
+                    "duration": 7.5,
                     "inputs": [
                         {
                             "name": "Mechanical Parts",
@@ -2164,7 +2164,7 @@
                 {
                     "id": "VehicleParts2AssemblyT3",
                     "name": "Vehicle parts 2 assembly (T3)",
-                    "duration": 7,
+                    "duration": 7.5,
                     "inputs": [
                         {
                             "name": "Vehicle Parts",
@@ -2189,7 +2189,7 @@
                 {
                     "id": "VehicleParts3AssemblyT3",
                     "name": "Vehicle parts 3 assembly (T3)",
-                    "duration": 7,
+                    "duration": 7.5,
                     "inputs": [
                         {
                             "name": "Vehicle Parts II",
@@ -2210,7 +2210,7 @@
                 {
                     "id": "LabEquipment1AssemblyT4",
                     "name": "Lab equipment 1 assembly (T4)",
-                    "duration": 7,
+                    "duration": 7.5,
                     "inputs": [
                         {
                             "name": "Mechanical Parts",
@@ -2231,7 +2231,7 @@
                 {
                     "id": "LabEquipment2AssemblyT4",
                     "name": "Lab equipment 2 assembly (T2)",
-                    "duration": 7,
+                    "duration": 7.5,
                     "inputs": [
                         {
                             "name": "Lab Equipment",
@@ -2256,7 +2256,7 @@
                 {
                     "id": "LabEquipment3AssemblyT3",
                     "name": "Lab equipment 3 assembly (T2)",
-                    "duration": 7,
+                    "duration": 7.5,
                     "inputs": [
                         {
                             "name": "Lab Equipment II",
@@ -2319,7 +2319,7 @@
                 {
                     "id": "HouseholdGoodsAssemblyT4",
                     "name": "Household goods assembly (T4)",
-                    "duration": 7,
+                    "duration": 7.5,
                     "inputs": [
                         {
                             "name": "Glass",
@@ -2455,6 +2455,27 @@
                         {
                             "name": "Electronics II",
                             "quantity": 4
+                        }
+                    ]
+                },
+                {
+                    "id": "UraniumRodsAssemblyT3",
+                    "name": "Uranium rods (T3)",
+                    "duration": 15,
+                    "inputs": [
+                        {
+                            "name": "Enriched uranium (4%)",
+                            "quantity": 2
+                        },
+                        {
+                            "name": "Steel",
+                            "quantity": 1
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "name": "Uranium rod",
+                            "quantity": 2
                         }
                     ]
                 },
@@ -2691,7 +2712,7 @@
                 {
                     "id": "FoodPackAssemblyMeatT3",
                     "name": "Food pack assembly (meat)",
-                    "duration": 7,
+                    "duration": 7.5,
                     "inputs": [
                         {
                             "name": "Meat",
@@ -2712,7 +2733,7 @@
                 {
                     "id": "FoodPackAssemblyEggsT3",
                     "name": "Food pack assembly (eggs)",
-                    "duration": 7,
+                    "duration": 7.5,
                     "inputs": [
                         {
                             "name": "Eggs",
@@ -2733,7 +2754,7 @@
                 {
                     "id": "FoodPackAssemblyTofuT3",
                     "name": "Food pack assembly (tofu)",
-                    "duration": 7,
+                    "duration": 7.5,
                     "inputs": [
                         {
                             "name": "Tofu",
@@ -2754,7 +2775,7 @@
                 {
                     "id": "OfficeSuppliesAssemblyT3",
                     "name": "Office supplies assembly",
-                    "duration": 7,
+                    "duration": 7.5,
                     "inputs": [
                         {
                             "name": "Paper",
@@ -3067,7 +3088,7 @@
                         },
                         {
                             "name": "Concrete slab",
-                            "quantity": 8
+                            "quantity": 6
                         }
                     ],
                     "outputs": [
@@ -3177,7 +3198,7 @@
                 {
                     "id": "VehicleParts1AssemblyT4",
                     "name": "Vehicle parts assembly (T4)",
-                    "duration": 7,
+                    "duration": 7.5,
                     "inputs": [
                         {
                             "name": "Mechanical Parts",
@@ -3244,7 +3265,7 @@
                 {
                     "id": "LabEquipment1AssemblyT3",
                     "name": "Lab equipment 1 assembly (T3)",
-                    "duration": 7,
+                    "duration": 7.5,
                     "inputs": [
                         {
                             "name": "Mechanical Parts",
@@ -3494,7 +3515,7 @@
                 },
                 {
                     "id": "UraniumRodsAssemblyT2",
-                    "name": "Uranium rods (T1)",
+                    "name": "Uranium rods (T2)",
                     "duration": 30,
                     "inputs": [
                         {
@@ -3943,7 +3964,7 @@
                         },
                         {
                             "name": "Concrete slab",
-                            "quantity": 4
+                            "quantity": 3
                         }
                     ],
                     "outputs": [
@@ -4053,7 +4074,7 @@
                 {
                     "id": "VehicleParts1AssemblyT3",
                     "name": "Vehicle parts assembly (T3)",
-                    "duration": 7,
+                    "duration": 7.5,
                     "inputs": [
                         {
                             "name": "Mechanical Parts",
@@ -6365,7 +6386,7 @@
                 {
                     "id": "WaterElectrolysisT2",
                     "name": "Water electrolysis",
-                    "duration": 7,
+                    "duration": 7.5,
                     "inputs": [
                         {
                             "name": "Water",
@@ -11649,7 +11670,7 @@
         {
             "id": "HydrogenReformer",
             "name": "Hydrogen reformer",
-            "category": "Derivatives",
+            "category": "Distillation",
             "next_tier": "",
             "workers": 8,
             "maintenance_cost_units": "Maintenance I",
@@ -12128,7 +12149,7 @@
         {
             "id": "WasteDump",
             "name": "Liquid dump",
-            "category": "Basic",
+            "category": "Fluid",
             "next_tier": "",
             "workers": 1,
             "maintenance_cost_units": "",
@@ -12507,33 +12528,33 @@
                 {
                     "id": "ExhaustFiltering",
                     "name": "Exhaust filtering",
-                    "duration": 10,
+                    "duration": 40,
                     "inputs": [
                         {
                             "name": "Exhaust",
-                            "quantity": 40
+                            "quantity": 160
                         },
                         {
                             "name": "Water",
-                            "quantity": 4
+                            "quantity": 16
                         }
                     ],
                     "outputs": [
                         {
                             "name": "Sulfur",
-                            "quantity": 1
+                            "quantity": 4
                         },
                         {
                             "name": "Carbon dioxide",
-                            "quantity": 16
+                            "quantity": 64
                         },
                         {
                             "name": "Steam (low)",
-                            "quantity": 4
+                            "quantity": 16
                         },
                         {
                             "name": "Air pollution",
-                            "quantity": 4
+                            "quantity": 16
                         }
                     ]
                 },
@@ -13531,6 +13552,27 @@
                         {
                             "name": "Compost",
                             "quantity": 2
+                        }
+                    ]
+                },
+                {
+                    "id": "EggsDigestion",
+                    "name": "Digestion",
+                    "duration": 60,
+                    "inputs": [
+                        {
+                            "name": "Eggs",
+                            "quantity": 12
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "name": "Fuel gas",
+                            "quantity": 12
+                        },
+                        {
+                            "name": "Compost",
+                            "quantity": 1
                         }
                     ]
                 }
