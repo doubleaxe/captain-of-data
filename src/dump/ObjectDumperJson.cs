@@ -1,16 +1,29 @@
 using Mafi;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Serialization;
 
 namespace CaptainOfData.dump
 {
+	internal static class TypeUtils
+	{
+		public static bool IsAnyType(Type objectType, Type baseType)
+		{
+			if (objectType == null) return false;
+			if (baseType.IsAssignableFrom(objectType)) return true;
+			if (objectType.IsGenericType && (objectType.GetGenericTypeDefinition() == baseType)) return true;
+			if (objectType.GetInterfaces().Any(i => i.IsGenericType && (i.GetGenericTypeDefinition() == baseType)))
+			{
+				return true;
+			}
+			return false;
+		}
+	}
+
 	internal abstract class WriteConverter : JsonConverter
 	{
 		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
@@ -19,50 +32,8 @@ namespace CaptainOfData.dump
 		}
 	}
 
-	// don't use ReferenceLoopHandling.Ignore with this serializer
-	// it works slightly weird way, and must serialize same object twice
-	// it will perform ReferenceLoopHandling.Ignore by itself
-	// it should be only one converter for everything, otherwise call chain is broken
-	internal class DepthLimitingConverter : WriteConverter
+	internal class MafiToStringConverter : WriteConverter
 	{
-		private readonly int _maxDepth;
-		private readonly IContractResolver _contractResolver;
-
-		private enum CurrentState
-		{
-			Waiting,
-			Serializing
-		}
-		private CurrentState _currentState;
-		private Stack<object> _currentStack = new Stack<object>();
-		private static Type[] _otherToStringTypes =
-		{
-		};
-
-		public DepthLimitingConverter(JsonSerializer jsonSerializer, int maxDepth)
-		{
-			_contractResolver = jsonSerializer.ContractResolver;
-			_maxDepth = maxDepth;
-			_currentState = CurrentState.Waiting;
-		}
-
-		public void Reset()
-		{
-			_currentState = CurrentState.Waiting;
-			_currentStack.Clear();
-		}
-
-		private static bool IsEnumerable(Type objectType)
-		{
-			if (objectType == null) return false;
-			if (typeof(IEnumerable).IsAssignableFrom(objectType)) return true;
-			if (objectType.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
-			{
-				return true;
-			}
-			return false;
-		}
-
 		private static bool IsMafiToString(Type objectType)
 		{
 			// Mafi namespace contains all basic types
@@ -70,16 +41,34 @@ namespace CaptainOfData.dump
 			// They are all basic values, but very noisy in json dump, but implement ToSting, so we check and write ToString
 			if (objectType.Namespace != "Mafi") return false;
 
-			MethodInfo toStringMethod = objectType.GetMethod("ToString", BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null);
-			bool implementsToString = toStringMethod.DeclaringType != typeof(object);
+			MethodInfo ToString = objectType.GetMethod("ToString", BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null);
+			bool implementsToString = ToString.DeclaringType != typeof(object);
 			return implementsToString;
 		}
+
+		public override bool CanConvert(Type objectType)
+		{
+			return IsMafiToString(objectType);
+		}
+
+		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+		{
+			writer.WriteValue(value.ToString());
+		}
+	}
+
+	internal class OtherToStringConverter : WriteConverter
+	{
+		private static Type[] _otherToStringTypes =
+		{
+			typeof(Mafi.Core.Entities.Static.Layout.LayoutTile),
+		};
 
 		private static bool IsOtherToString(Type objectType)
 		{
 			foreach (Type type in _otherToStringTypes)
 			{
-				if (objectType.IsAssignableFrom(type))
+				if (TypeUtils.IsAnyType(objectType, type))
 				{
 					return true;
 				}
@@ -87,115 +76,139 @@ namespace CaptainOfData.dump
 			return false;
 		}
 
-		// this is based totally on assumption that CanConvert is called exactly once per conversion srep
-		// it is true for current json, but may be changed later
 		public override bool CanConvert(Type objectType)
 		{
-			JsonContract contract = _contractResolver.ResolveContract(objectType);
-			bool canConvert = canConvert = (contract is JsonContainerContract);
-			if (!canConvert) return false;
-
-			if (IsMafiToString(objectType) || IsOtherToString(objectType)) return true;
-
-			SerializationCallback onSerializing = OnSerializing;
-			if (!contract.OnSerializingCallbacks.Any(existingCallback => existingCallback.Method == onSerializing.Method))
-			{
-				contract.OnSerializingCallbacks.Add(onSerializing);
-			}
-			SerializationCallback onSerialized = OnSerialized;
-			if (!contract.OnSerializedCallbacks.Any(existingCallback => existingCallback.Method == onSerialized.Method))
-			{
-				contract.OnSerializingCallbacks.Add(onSerialized);
-			}
-
-			if (_currentState == CurrentState.Serializing)
-			{
-				return false;
-			}
-			return true;
-		}
-
-		private void OnSerializing(object o, StreamingContext context)
-		{
-			// we need to do this in OnSerializing handler, because CanConvert is not always executed
-			// and this is fired always, when base implementation is about to serialize
-			if (_currentState == CurrentState.Serializing)
-			{
-				_currentState = CurrentState.Waiting;
-			}
-		}
-
-		private void OnSerialized(object o, StreamingContext context)
-		{
-
+			return IsOtherToString(objectType);
 		}
 
 		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
 		{
-			// this can be called in Serializing state, CanConvert is executed not every time, let's be careful
-			if (_currentState != CurrentState.Waiting)
-			{
-				return;
-			}
+			writer.WriteValue(value.ToString());
+		}
+	}
 
-			if (value == null)
-			{
-				writer.WriteNull();
-				return;
-			}
+	internal class IgnoreTypeConverter : WriteConverter
+	{
+		private static Type[] _ignoreTypes =
+		{
+			typeof(Mafi.Core.Entities.Static.Layout.TerrainVertexRel)
+		};
 
-			Type objectType = value.GetType();
-			if (IsMafiToString(objectType) || IsOtherToString(objectType))
+		private static bool IsIgnoreType(Type objectType)
+		{
+			foreach (Type type in _ignoreTypes)
 			{
-				writer.WriteValue(value.ToString());
-				return;
-			}
-
-			object toSerialize = value;
-			MethodInfo asEnumerable = objectType.GetMethod("AsEnumerable");
-			if ((asEnumerable != null) && IsEnumerable(asEnumerable.ReturnType))
-			{
-				// Mafi.Collections.ImmutableCollections.ImmutableArray
-				object enumerable = asEnumerable.Invoke(value, new object[0]);
-				toSerialize = enumerable;
-			}
-
-			foreach (object alreadySerializing in _currentStack)
-			{
-				// using identity compare
-				if (ReferenceEquals(alreadySerializing, toSerialize))
+				if (TypeUtils.IsAnyType(objectType, type))
 				{
-					// ReferenceLoopHandling.Ignore
-					return;
+					return true;
 				}
 			}
+			return false;
+		}
 
-			int currentDepth = _currentStack.Count;
-			if (currentDepth >= _maxDepth)
+		public override bool CanConvert(Type objectType)
+		{
+			return IsIgnoreType(objectType);
+		}
+
+		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+		{
+			writer.WriteValue("Skip");
+		}
+	}
+
+	internal class MafiCollectionConverter : WriteConverter
+	{
+		private static bool IsEnumerable(Type objectType)
+		{
+			return TypeUtils.IsAnyType(objectType, typeof(IEnumerable)) || TypeUtils.IsAnyType(objectType, typeof(IEnumerable<>));
+		}
+
+		public override bool CanConvert(Type objectType)
+		{
+			if (IsEnumerable(objectType)) return false;
+			// Mafi.Collections.ImmutableCollections.ImmutableArray
+			MethodInfo AsEnumerable = objectType.GetMethod("AsEnumerable");
+			if ((AsEnumerable != null) && IsEnumerable(AsEnumerable.ReturnType)) return true;
+			// Mafi.Collections.HybridSet
+			MethodInfo All = objectType.GetMethod("All");
+			if ((All != null) && IsEnumerable(All.ReturnType)) return true;
+			// Mafi.Collections.ImmutableCollections.ImmutableArray
+			MethodInfo ToLyst = objectType.GetMethod("ToLyst");
+			if ((ToLyst != null) && IsEnumerable(ToLyst.ReturnType)) return true;
+			return false;
+		}
+
+		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+		{
+			Type objectType = value.GetType();
+			MethodInfo AsEnumerable = objectType.GetMethod("AsEnumerable");
+			if (AsEnumerable != null)
 			{
-				writer.WriteValue($"[Max depth {_maxDepth} reached]");
+				object enumerable = AsEnumerable.Invoke(value, new object[0]);
+				serializer.Serialize(writer, enumerable);
 				return;
 			}
-
-			_currentState = CurrentState.Serializing;
-			_currentStack.Push(toSerialize);
-			try
+			MethodInfo All = objectType.GetMethod("All");
+			if (All != null)
 			{
-				Log.Debug($"Serializing -> {currentDepth} : {objectType}{(objectType == toSerialize.GetType() ? "" : " => " + toSerialize.GetType())}");
-				serializer.Serialize(writer, toSerialize);
+				object enumerable = All.Invoke(value, new object[0]);
+				serializer.Serialize(writer, enumerable);
+				return;
 			}
-			finally
+			MethodInfo ToLyst = objectType.GetMethod("ToLyst");
+			if (ToLyst != null)
 			{
-				_currentStack.Pop();
+				object enumerable = ToLyst.Invoke(value, new object[0]);
+				// Lyst is too hard to write
+				enumerable = ((IEnumerable)enumerable).Cast<object>().ToList();
+				serializer.Serialize(writer, enumerable);
+				return;
 			}
 		}
+	}
+
+	internal class DelegateConverter : WriteConverter
+	{
+		private readonly Func<Type, bool> _canConvert;
+		private readonly Action<JsonWriter, Object, JsonSerializer> _writeJson;
+
+		private DelegateConverter(Func<Type, bool> canConvert, Action<JsonWriter, Object, JsonSerializer> writeJson)
+		{
+			_canConvert = canConvert;
+			_writeJson = writeJson;
+		}
+
+		public override bool CanConvert(Type objectType) => _canConvert(objectType);
+
+		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) => _writeJson(writer, value, serializer);
+
+		public static DelegateConverter Create(Func<Type, bool> canConvert, Action<JsonWriter, Object, JsonSerializer> writeJson) => new DelegateConverter(canConvert, writeJson);
+	}
+
+	internal class DelegateConverter<T> : JsonConverter<T>
+	{
+		private readonly Action<JsonWriter, T, JsonSerializer> _writeJson;
+
+		private DelegateConverter(Action<JsonWriter, T, JsonSerializer> writeJson)
+		{
+			_writeJson = writeJson;
+		}
+
+		public override T ReadJson(JsonReader reader, Type objectType, T existingValue, bool hasExistingValue, JsonSerializer serializer)
+		{
+			throw new NotImplementedException("This converter only supports serialization");
+		}
+
+		public override void WriteJson(JsonWriter writer, T value, JsonSerializer serializer) => _writeJson(writer, (T)value, serializer);
+
+		public static DelegateConverter<T> Create(Action<JsonWriter, T, JsonSerializer> writeJson) => new DelegateConverter<T>(writeJson);
 	}
 
 	public class ObjectDumperJson : ObjectDumper
 	{
 		private JsonTextWriter _jsonDumpWriter;
 		private JsonSerializer _jsonDumpSerializer;
-		private DepthLimitingConverter _converter;
 
 		public ObjectDumperJson(StreamWriter dumpWriter, int maxDepth) : base(dumpWriter)
 		{
@@ -203,16 +216,78 @@ namespace CaptainOfData.dump
 			_jsonDumpWriter.Formatting = Formatting.Indented;
 			_jsonDumpWriter.WriteStartArray();
 
-			_jsonDumpSerializer = new JsonSerializer();
-			_jsonDumpSerializer.ReferenceLoopHandling = ReferenceLoopHandling.Serialize;
-			_jsonDumpSerializer.Error += delegate (object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
+			JsonSerializerSettings settings = new JsonSerializerSettings
 			{
-				Log.Debug($"Cannot serialize {sender.GetType().FullName}");
-				args.ErrorContext.Handled = true;
+				ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+				Converters = new List<JsonConverter>
+				{
+					new IgnoreTypeConverter(),
+					/*
+					DelegateConverter.Create(
+						(objectType) => TypeUtils.IsAnyType(objectType, typeof(Option<>)),
+						(writer, value, serializer) =>
+						{
+							Type objectType = value.GetType();
+							PropertyInfo ValueOrNull = objectType.GetProperty("ValueOrNull");
+							object _value = ValueOrNull.GetValue(value);
+							if(_value == null)
+							{
+								writer.WriteNull();
+								return;
+							}
+							serializer.Serialize(writer, _value);
+						}
+					),
+					*/
+					DelegateConverter<Mafi.Core.Mods.IMod>.Create((writer, value, serializer) => writer.WriteValue(value.Name)),
+					DelegateConverter<Mafi.Core.Prototypes.Proto.Str>.Create((writer, value, serializer) => {
+						if(value.Name.TranslatedString == "")
+						{
+							writer.WriteValue("");
+							return;
+						}
+						writer.WriteStartObject();
+						writer.WritePropertyName("id");
+						writer.WriteValue(value.Name.Id);
+						writer.WritePropertyName("value");
+						writer.WriteValue(value.Name.TranslatedString);
+						writer.WriteEndObject();
+					}),
+					DelegateConverter.Create(
+						(objectType) =>
+						{
+							// Proto.ID, IoPortShapeProto.ID, etc...
+							if(objectType.Name != "ID") return false;
+							FieldInfo Value = objectType.GetField("Value");
+							if((Value == null) || (Value.FieldType != typeof(string))) return false;
+							return true;
+						},
+						(writer, value, serializer) =>
+						{
+							Type objectType = value.GetType();
+							FieldInfo Value = objectType.GetField("Value");
+							object _value = Value.GetValue(value);
+							if(_value == null)
+							{
+								writer.WriteNull();
+								return;
+							}
+							writer.WriteValue(_value);
+						}
+					),
+					new MafiCollectionConverter(),
+					new OtherToStringConverter(),
+					// must be last one
+					new MafiToStringConverter(),
+				},
+				Error = delegate (object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
+				{
+					Log.Debug($"Cannot serialize {sender.GetType().FullName}");
+					args.ErrorContext.Handled = true;
+				}
 			};
 
-			_converter = new DepthLimitingConverter(_jsonDumpSerializer, maxDepth);
-			_jsonDumpSerializer.Converters.Add(_converter);
+			_jsonDumpSerializer = JsonSerializer.Create(settings);
 		}
 
 		public override void Dispose()
@@ -231,8 +306,6 @@ namespace CaptainOfData.dump
 
 		public override void DumpObject(string name, object element)
 		{
-			_converter.Reset();
-
 			_jsonDumpWriter.WriteStartObject();
 			_jsonDumpWriter.WritePropertyName("dump-id");
 			_jsonDumpWriter.WriteValue(name);

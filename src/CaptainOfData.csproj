@@ -29,7 +29,7 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<None Update="src\config\config.json">
+		<None Update="config\config.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<Link>config.json</Link>
 		</None>
