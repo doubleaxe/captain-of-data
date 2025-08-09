@@ -1,5 +1,6 @@
 using Mafi;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -87,14 +88,25 @@ namespace CaptainOfData.dump
 		}
 	}
 
+	internal class ForceToStringConverter : WriteConverter
+	{
+		public override bool CanConvert(Type objectType)
+		{
+			return true;
+		}
+
+		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+		{
+			writer.WriteValue(value.ToString());
+		}
+	}
+
 	internal class IgnoreTypeConverter : WriteConverter
 	{
 		private static Type[] _ignoreTypes =
 		{
 			typeof(Mafi.Core.Entities.Static.Layout.TerrainVertexRel),
 			typeof(Mafi.Core.Products.TerrainMaterialProto),
-			// for ParentCategory and no recursion
-			typeof(Option<Mafi.Core.Entities.Static.Layout.ToolbarCategoryProto>),
 			typeof(Mafi.Core.Entities.Static.Layout.EntityLayoutParams),
 		};
 
@@ -207,6 +219,80 @@ namespace CaptainOfData.dump
 		public static DelegateConverter<T> Create(Action<JsonWriter, T, JsonSerializer> writeJson) => new DelegateConverter<T>(writeJson);
 	}
 
+	internal class ContractResolver : DefaultContractResolver
+	{
+		protected override JsonObjectContract CreateObjectContract(Type objectType)
+		{
+			JsonObjectContract contract = base.CreateObjectContract(objectType);
+			ModifyContract(objectType, contract.Properties);
+			return contract;
+		}
+		protected override JsonDynamicContract CreateDynamicContract(Type objectType)
+		{
+			JsonDynamicContract contract = base.CreateDynamicContract(objectType);
+			ModifyContract(objectType, contract.Properties);
+			return contract;
+		}
+		private static void ModifyContract(Type objectType, JsonPropertyCollection properties)
+		{
+			// tiers cause cycles
+			if (typeof(Mafi.Core.Prototypes.TierData).IsAssignableFrom(objectType))
+			{
+				StringProps(properties, "PreviousTierIndirect", "NextTierIndirect");
+				return;
+			}
+			if (typeof(Mafi.Core.Prototypes.UpgradeData).IsAssignableFrom(objectType))
+			{
+				StringProps(properties, "PreviousTier", "NextTier");
+				HideProps(properties, "TierData");
+				return;
+			}
+			if (typeof(Mafi.Core.Entities.Static.Layout.ToolbarCategoryProto).IsAssignableFrom(objectType))
+			{
+				StringProps(properties, "ParentCategory");
+				return;
+			}
+			if (typeof(Mafi.Core.Factory.Recipes.RecipeProto).IsAssignableFrom(objectType))
+			{
+				HideProps(properties, "AllUserVisibleInputs", "AllUserVisibleOutputs", "OutputsAtStart", "OutputsAtEnd");
+				return;
+			}
+			if (typeof(Mafi.Core.Factory.Recipes.RecipeProduct).IsAssignableFrom(objectType))
+			{
+				StringProps(properties, "Product");
+				return;
+			}
+
+		}
+
+		private static void StringProps(JsonPropertyCollection properties, params string[] names)
+		{
+			foreach (string name in names)
+			{
+				JsonProperty peorpety = properties.GetClosestMatchProperty(name);
+				if (peorpety != null)
+				{
+					peorpety.Converter = new ForceToStringConverter();
+				}
+
+			}
+		}
+
+		private static void HideProps(JsonPropertyCollection properties, params string[] names)
+		{
+			foreach (string name in names)
+			{
+				JsonProperty peorpety = properties.GetClosestMatchProperty(name);
+				if (peorpety != null)
+				{
+					peorpety.ShouldSerialize = (object obj) => false;
+				}
+
+			}
+		}
+
+	}
+
 	public class ObjectDumperJson : ObjectDumper
 	{
 		private JsonTextWriter _jsonDumpWriter;
@@ -221,6 +307,7 @@ namespace CaptainOfData.dump
 			JsonSerializerSettings settings = new JsonSerializerSettings
 			{
 				ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+				ContractResolver = new ContractResolver(),
 				Converters = new List<JsonConverter>
 				{
 					new IgnoreTypeConverter(),
@@ -240,33 +327,6 @@ namespace CaptainOfData.dump
 						}
 					),
 					DelegateConverter<Mafi.Core.Mods.IMod>.Create((writer, value, serializer) => writer.WriteValue(value.Name)),
-					// tiers cause cycles
-					DelegateConverter<Mafi.Core.Prototypes.TierData>.Create((writer, value, serializer) => {
-						writer.WriteStartObject();
-						writer.WritePropertyName("NextTierIndirect");
-						writer.WriteValue(value.NextTierIndirect.HasValue ? value.NextTierIndirect.Value.ToString() : null);
-						writer.WritePropertyName("PreviousTierIndirect");
-						writer.WriteValue(value.PreviousTierIndirect.HasValue ? value.PreviousTierIndirect.Value.ToString() : null);
-						writer.WritePropertyName("TierNumberForUi");
-						writer.WriteValue(value.TierNumberForUi);
-						writer.WriteEndObject();
-					}),
-					DelegateConverter<Mafi.Core.Prototypes.UpgradeData>.Create((writer, value, serializer) => {
-						writer.WriteStartObject();
-						writer.WritePropertyName("NextTier");
-						writer.WriteValue(value.NextTier.HasValue ? value.NextTier.Value.ToString() : null);
-						writer.WritePropertyName("PreviousTier");
-						writer.WriteValue(value.PreviousTier.HasValue ? value.PreviousTier.Value.ToString() : null);
-						writer.WritePropertyName("SkipFromReplaceFlow");
-						writer.WriteValue(value.SkipFromReplaceFlow);
-						writer.WritePropertyName("CannotDowngrade");
-						writer.WriteValue(value.CannotDowngrade);
-						writer.WritePropertyName("CannotSkipUpgrade");
-						writer.WriteValue(value.CannotSkipUpgrade);
-						writer.WritePropertyName("CannotMove");
-						writer.WriteValue(value.CannotMove);
-						writer.WriteEndObject();
-					}),
 					DelegateConverter<Mafi.Core.Prototypes.Proto.Str>.Create((writer, value, serializer) => {
 						if(value.Name.TranslatedString == "")
 						{
