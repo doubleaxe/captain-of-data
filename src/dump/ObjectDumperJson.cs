@@ -91,7 +91,11 @@ namespace CaptainOfData.dump
 	{
 		private static Type[] _ignoreTypes =
 		{
-			typeof(Mafi.Core.Entities.Static.Layout.TerrainVertexRel)
+			typeof(Mafi.Core.Entities.Static.Layout.TerrainVertexRel),
+			typeof(Mafi.Core.Products.TerrainMaterialProto),
+			// for ParentCategory and no recursion
+			typeof(Option<Mafi.Core.Entities.Static.Layout.ToolbarCategoryProto>),
+			typeof(Mafi.Core.Entities.Static.Layout.EntityLayoutParams),
 		};
 
 		private static bool IsIgnoreType(Type objectType)
@@ -160,8 +164,6 @@ namespace CaptainOfData.dump
 			if (ToLyst != null)
 			{
 				object enumerable = ToLyst.Invoke(value, new object[0]);
-				// Lyst is too hard to write
-				enumerable = ((IEnumerable)enumerable).Cast<object>().ToList();
 				serializer.Serialize(writer, enumerable);
 				return;
 			}
@@ -222,7 +224,6 @@ namespace CaptainOfData.dump
 				Converters = new List<JsonConverter>
 				{
 					new IgnoreTypeConverter(),
-					/*
 					DelegateConverter.Create(
 						(objectType) => TypeUtils.IsAnyType(objectType, typeof(Option<>)),
 						(writer, value, serializer) =>
@@ -235,11 +236,37 @@ namespace CaptainOfData.dump
 								writer.WriteNull();
 								return;
 							}
-							serializer.Serialize(writer, _value);
+							serializer.Serialize(writer, value);
 						}
 					),
-					*/
 					DelegateConverter<Mafi.Core.Mods.IMod>.Create((writer, value, serializer) => writer.WriteValue(value.Name)),
+					// tiers cause cycles
+					DelegateConverter<Mafi.Core.Prototypes.TierData>.Create((writer, value, serializer) => {
+						writer.WriteStartObject();
+						writer.WritePropertyName("NextTierIndirect");
+						writer.WriteValue(value.NextTierIndirect.HasValue ? value.NextTierIndirect.Value.ToString() : null);
+						writer.WritePropertyName("PreviousTierIndirect");
+						writer.WriteValue(value.PreviousTierIndirect.HasValue ? value.PreviousTierIndirect.Value.ToString() : null);
+						writer.WritePropertyName("TierNumberForUi");
+						writer.WriteValue(value.TierNumberForUi);
+						writer.WriteEndObject();
+					}),
+					DelegateConverter<Mafi.Core.Prototypes.UpgradeData>.Create((writer, value, serializer) => {
+						writer.WriteStartObject();
+						writer.WritePropertyName("NextTier");
+						writer.WriteValue(value.NextTier.HasValue ? value.NextTier.Value.ToString() : null);
+						writer.WritePropertyName("PreviousTier");
+						writer.WriteValue(value.PreviousTier.HasValue ? value.PreviousTier.Value.ToString() : null);
+						writer.WritePropertyName("SkipFromReplaceFlow");
+						writer.WriteValue(value.SkipFromReplaceFlow);
+						writer.WritePropertyName("CannotDowngrade");
+						writer.WriteValue(value.CannotDowngrade);
+						writer.WritePropertyName("CannotSkipUpgrade");
+						writer.WriteValue(value.CannotSkipUpgrade);
+						writer.WritePropertyName("CannotMove");
+						writer.WriteValue(value.CannotMove);
+						writer.WriteEndObject();
+					}),
 					DelegateConverter<Mafi.Core.Prototypes.Proto.Str>.Create((writer, value, serializer) => {
 						if(value.Name.TranslatedString == "")
 						{
