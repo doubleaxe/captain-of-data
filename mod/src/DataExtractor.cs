@@ -2572,77 +2572,159 @@ namespace DataExtractorMod
 
                     List<string> recipeItems = new List<string> { };
 
-                    //default recipes are given at max power level
-                    var recipeDurationAtMaxLevel = machine.Recipes.First().Duration;
-                    var duration = (recipeDurationAtMaxLevel / 10);
-                    var waterInPerDuration = (machine.WaterInPerPowerLevel.Quantity.Value * machine.MaxPowerLevel) * (recipeDurationAtMaxLevel.Seconds / machine.ProcessDuration.Seconds);
-                    var steamOutPerDuration = (machine.SteamOutPerPowerLevel.Quantity.Value * machine.MaxPowerLevel) * (recipeDurationAtMaxLevel.Seconds / machine.ProcessDuration.Seconds);
+                    //default recipes are actually build from reactor data itself (at max power level)
+                    //here we rebuild these virtual recipes for all power level and for all enrichment levels
+                    //nuclear reactor recipe can count everything by itself at any power level
+                    //we should do some nasty enumeration to keep recipe ids backward compatible
+                    var maxPowerLevel = machine.MaxPowerLevel;
 
                     //we keep recipe naming convention and order with prev version
+                    //it is ugly, but backward compatible
                     int i = 0;
-                    int[] levels = new int[] { machine.MaxPowerLevel, 1 };
-                    foreach (int level in levels)
+                    int[] compatPowerLevels = new int[] { machine.MaxPowerLevel, 1 };
+                    int[] compatEnrichmentLevels = new int[] { 2 };
+                    // must walk from max to min, to keep naming compatible
+                    for (int powerLevel = maxPowerLevel; powerLevel >= 1; powerLevel--)
                     {
                         foreach (var fuel in machine.FuelPairs)
                         {
-                            var fuelPerDuration = (machine.MaxPowerLevel * recipeDurationAtMaxLevel.Seconds) / fuel.Duration.Seconds;
+                            string recipe_id;
+                            string recipe_name;
+                            if (compatPowerLevels.Contains(powerLevel))
+                            {
+                                recipe_id = (id + ((i != 0) ? i.ToString() : ""));
+                                recipe_name = (name + ((i != 0) ? (" " + i.ToString()) : ""));
+                                i++;
+                            }
+                            else
+                            {
+                                recipe_id = (id + "-PowerLevel" + powerLevel);
+                                recipe_name = (name + " PowerLevel " + powerLevel);
+                            }
 
-                            string recipe_id = (id + ((i != 0) ? i.ToString() : ""));
-                            string recipe_name = (name + ((i != 0) ? (" " + i.ToString()) : ""));
+                            NuclearReactor.Recipe recipe;
 
-                            List<string> inputItems = new List<string> { };
-                            List<string> outputItems = new List<string> { };
+                            List<string> inputItems;
+                            List<string> outputItems;
 
                             string machineRecipeJson;
+                            var powerLevelPercent = powerLevel * Percent.Hundred;
 
-                            //each power level decreases duration
-                            //by default duration is specified at max power level
-                            var poverLevelMultiplier = (machine.MaxPowerLevel + 1 - level);
+                            // there is no point in recipes without enrichment, if machine supports it
+                            // we keep it to calculate proper ids for backward compatible names
+                            if (!machine.Enrichment.HasValue)
+                            {
+                                recipe = new NuclearReactor.Recipe(machine, fuel, powerLevelPercent, 1, Percent.Hundred);
+                                inputItems = new List<string> { };
+                                outputItems = new List<string> { };
 
-                            machineRecipeJson = MakeRecipeIOJsonObject(machine.WaterInPerPowerLevel.Product.Strings.Name.ToString(), waterInPerDuration.ToString());
-                            inputItems.Add(machineRecipeJson);
-                            machineRecipeJson = MakeRecipeIOJsonObject(machine.SteamOutPerPowerLevel.Product.Strings.Name.ToString(), steamOutPerDuration.ToString());
-                            outputItems.Add(machineRecipeJson);
+                                recipe.AllUserVisibleInputs.ForEach(delegate (RecipeInput input)
+                                {
+                                    Option<ProductProto> product = protosDb.Get<ProductProto>(input.Product.Id);
+                                    string machineRecipeInputJson = MakeRecipeIOJsonObject(input.Product.Strings.Name.ToString(), input.Quantity.Value.ToString());
+                                    inputItems.Add(machineRecipeInputJson);
+                                });
 
-                            machineRecipeJson = MakeRecipeIOJsonObject(fuel.FuelInProto.Strings.Name.ToString(), fuelPerDuration.ToString());
-                            inputItems.Add(machineRecipeJson);
-                            machineRecipeJson = MakeRecipeIOJsonObject(fuel.SpentFuelOutProto.Strings.Name.ToString(), fuelPerDuration.ToString());
-                            outputItems.Add(machineRecipeJson);
+                                recipe.AllUserVisibleOutputs.ForEach(delegate (RecipeOutput output)
+                                {
+                                    Option<ProductProto> product = protosDb.Get<ProductProto>(output.Product.Id);
+                                    string machineRecipeOutputJson = MakeRecipeIOJsonObject(output.Product.Strings.Name.ToString(), output.Quantity.Value.ToString());
+                                    outputItems.Add(machineRecipeOutputJson);
+                                });
 
-                            machineRecipeJson = MakeRecipeJsonObject(
-                                recipe_id,
-                                recipe_name,
-                                (duration * poverLevelMultiplier).ToString(),
-                                inputItems.JoinStrings(","),
-                                outputItems.JoinStrings(",")
-                            );
+                                machineRecipeJson = MakeRecipeJsonObject(
+                                    recipe_id,
+                                    recipe_name,
+                                    recipe.Duration.Seconds.ToString(),
+                                    inputItems.JoinStrings(","),
+                                    outputItems.JoinStrings(",")
+                                );
 
-                            recipeItems.Add(machineRecipeJson);
-                            i++;
+                                recipeItems.Add(machineRecipeJson);
+                            }
 
                             //merge enrichment recipe, actually they are independent and could be executed both
                             //because upkeep is not increaed, we should merge these
                             if (machine.Enrichment.HasValue)
                             {
                                 var enrichment = machine.Enrichment.Value;
-                                recipe_id = (id + ((i != 0) ? i.ToString() : ""));
-                                recipe_name = (name + ((i != 0) ? (" " + i.ToString()) : ""));
+                                var enrichmentLevel = 1;
+                                foreach (var enrichmentStep in enrichment.EnrichmentSteps)
+                                {
+                                    recipe = new NuclearReactor.Recipe(machine, fuel, powerLevelPercent, enrichmentStep.SteamReductionDiv, enrichmentStep.FuelMultiplier);
+                                    inputItems = new List<string> { };
+                                    outputItems = new List<string> { };
 
-                                machineRecipeJson = MakeRecipeIOJsonObject(enrichment.InputProduct.Strings.Name.ToString(), enrichment.ProcessedPerLevel.ToString());
-                                inputItems.Add(machineRecipeJson);
-                                machineRecipeJson = MakeRecipeIOJsonObject(enrichment.OutputProduct.Strings.Name.ToString(), enrichment.ProcessedPerLevel.ToString());
-                                outputItems.Add(machineRecipeJson);
+                                    var fuelPerMinute = recipe.FuelPerMinute;
+                                    if (fuelPerMinute == null)
+                                    {
+                                        // coi bug (in sources)??? recalc if null
+                                        fuelPerMinute = (recipe.Duration.Ticks / fuel.Duration.Ticks).ScaledByRounded(powerLevelPercent).Quantity();
+                                    }
+                                    // why it isn't calculated automatically??
+                                    var fuelPerDuration = Fix32.FromInt(fuelPerMinute.Value).ScaledBy(recipe.FuelMultiplier) * recipe.Duration.Ticks / Duration.OneMinute.Ticks;
 
-                                machineRecipeJson = MakeRecipeJsonObject(
-                                    recipe_id,
-                                    recipe_name,
-                                    (60 / level).ToString(),
-                                    inputItems.JoinStrings(","),
-                                    outputItems.JoinStrings(",")
-                                );
+                                    recipe.AllUserVisibleInputs.ForEach(delegate (RecipeInput input)
+                                    {
+                                        var quantity = Fix32.FromInt(input.Quantity.Value);
+                                        if (input.Product.Id == fuel.FuelInProto.Id)
+                                        {
+                                            quantity = fuelPerDuration;
+                                        }
+                                        string machineRecipeInputJson = MakeRecipeIOJsonObject(input.Product.Strings.Name.ToString(), quantity.ToString());
+                                        inputItems.Add(machineRecipeInputJson);
+                                    });
 
-                                recipeItems.Add(machineRecipeJson);
-                                i++;
+                                    recipe.AllUserVisibleOutputs.ForEach(delegate (RecipeOutput output)
+                                    {
+                                        var quantity = Fix32.FromInt(output.Quantity.Value);
+                                        if (output.Product.Id == fuel.SpentFuelOutProto.Id)
+                                        {
+                                            quantity = fuelPerDuration;
+                                        }
+                                        string machineRecipeOutputJson = MakeRecipeIOJsonObject(output.Product.Strings.Name.ToString(), quantity.ToString());
+                                        outputItems.Add(machineRecipeOutputJson);
+                                    });
+
+                                    var haveEnrichment = enrichmentStep.BreedingRatio != 0;
+                                    if (haveEnrichment)
+                                    {
+                                        var enrichmentSpentPerDuration = fuelPerDuration * enrichmentStep.BreedingRatio;
+                                        var enrichmentProcessedPerDuration = enrichmentSpentPerDuration * enrichment.ProcessedPerLevel;
+
+                                        machineRecipeJson = MakeRecipeIOJsonObject(enrichment.InputProduct.Strings.Name.ToString(), enrichmentSpentPerDuration.ToString());
+                                        inputItems.Add(machineRecipeJson);
+                                        machineRecipeJson = MakeRecipeIOJsonObject(enrichment.OutputProduct.Strings.Name.ToString(), enrichmentProcessedPerDuration.ToString());
+                                        outputItems.Add(machineRecipeJson);
+                                    }
+
+                                    //for backward compatibility we use above (null) recipe ids for zero enrichment
+                                    if (haveEnrichment)
+                                    {
+                                        if (compatPowerLevels.Contains(powerLevel) && compatEnrichmentLevels.Contains(enrichmentLevel))
+                                        {
+                                            recipe_id = (id + ((i != 0) ? i.ToString() : ""));
+                                            recipe_name = (name + ((i != 0) ? (" " + i.ToString()) : ""));
+                                            i++;
+                                        }
+                                        else
+                                        {
+                                            recipe_id = (id + "-PowerLevel" + powerLevel + "-Enrichment" + enrichmentLevel);
+                                            recipe_name = (name + " PowerLevel " + powerLevel + " Enrichment " + enrichmentLevel);
+                                        }
+                                    }
+
+                                    machineRecipeJson = MakeRecipeJsonObject(
+                                        recipe_id,
+                                        recipe_name,
+                                        recipe.Duration.Seconds.ToString(),
+                                        inputItems.JoinStrings(","),
+                                        outputItems.JoinStrings(",")
+                                    );
+
+                                    recipeItems.Add(machineRecipeJson);
+                                    enrichmentLevel++;
+                                }
                             }
                         }
                     }
