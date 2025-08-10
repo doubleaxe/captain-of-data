@@ -18162,8 +18162,8 @@
                     "power_multiplier": 1
                 },
                 {
-                    "id": "NuclearReactorT2-PowerLevel3",
-                    "name": "Nuclear reactor II PowerLevel 3",
+                    "id": "NuclearReactorT2-Fuel1-PowerLevel3",
+                    "name": "Nuclear reactor II Fuel 1 PowerLevel 3",
                     "duration": 40,
                     "inputs": [
                         {
@@ -18188,8 +18188,8 @@
                     "power_multiplier": 1
                 },
                 {
-                    "id": "NuclearReactorT2-PowerLevel3",
-                    "name": "Nuclear reactor II PowerLevel 3",
+                    "id": "NuclearReactorT2-Fuel2-PowerLevel3",
+                    "name": "Nuclear reactor II Fuel 2 PowerLevel 3",
                     "duration": 40,
                     "inputs": [
                         {
@@ -18214,8 +18214,8 @@
                     "power_multiplier": 1
                 },
                 {
-                    "id": "NuclearReactorT2-PowerLevel2",
-                    "name": "Nuclear reactor II PowerLevel 2",
+                    "id": "NuclearReactorT2-Fuel1-PowerLevel2",
+                    "name": "Nuclear reactor II Fuel 1 PowerLevel 2",
                     "duration": 60,
                     "inputs": [
                         {
@@ -18240,8 +18240,8 @@
                     "power_multiplier": 1
                 },
                 {
-                    "id": "NuclearReactorT2-PowerLevel2",
-                    "name": "Nuclear reactor II PowerLevel 2",
+                    "id": "NuclearReactorT2-Fuel2-PowerLevel2",
+                    "name": "Nuclear reactor II Fuel 2 PowerLevel 2",
                     "duration": 60,
                     "inputs": [
                         {
@@ -18370,8 +18370,8 @@
                     "power_multiplier": 1
                 },
                 {
-                    "id": "NuclearReactor-PowerLevel2",
-                    "name": "Nuclear reactor PowerLevel 2",
+                    "id": "NuclearReactor-Fuel1-PowerLevel2",
+                    "name": "Nuclear reactor Fuel 1 PowerLevel 2",
                     "duration": 60,
                     "inputs": [
                         {
@@ -18550,8 +18550,8 @@
                     "power_multiplier": 1
                 },
                 {
-                    "id": "FastBreederReactor-PowerLevel3",
-                    "name": "Fast breeder reactor PowerLevel 3",
+                    "id": "FastBreederReactor-Fuel1-PowerLevel3",
+                    "name": "Fast breeder reactor Fuel 1 PowerLevel 3",
                     "duration": 60,
                     "inputs": [
                         {
@@ -18644,8 +18644,8 @@
                     "power_multiplier": 1
                 },
                 {
-                    "id": "FastBreederReactor-PowerLevel2",
-                    "name": "Fast breeder reactor PowerLevel 2",
+                    "id": "FastBreederReactor-Fuel1-PowerLevel2",
+                    "name": "Fast breeder reactor Fuel 1 PowerLevel 2",
                     "duration": 60,
                     "inputs": [
                         {

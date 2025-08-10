@@ -2593,6 +2593,7 @@ namespace DataExtractorMod
                     // must walk from max to min, to keep naming compatible
                     for (int powerLevel = maxPowerLevel; powerLevel >= 1; powerLevel--)
                     {
+                        int fuelIndex = 1;
                         foreach (var fuel in machine.FuelPairs)
                         {
                             string recipe_id;
@@ -2605,9 +2606,10 @@ namespace DataExtractorMod
                             }
                             else
                             {
-                                recipe_id = (id + "-PowerLevel" + powerLevel);
-                                recipe_name = (name + " PowerLevel " + powerLevel);
+                                recipe_id = (id + "-Fuel" + fuelIndex + "-PowerLevel" + powerLevel);
+                                recipe_name = (name + " Fuel " + fuelIndex + " PowerLevel " + powerLevel);
                             }
+                            fuelIndex++;
 
                             NuclearReactor.Recipe recipe;
 
