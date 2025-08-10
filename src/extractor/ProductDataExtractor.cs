@@ -18,7 +18,7 @@ namespace CaptainOfData
 			{
 				_jsonWriter.WriteValue(product.Id.ToString());
 
-				DumpImage(product.Id.ToString(), _assetsDb.GetSharedTexture(product.IconPath));
+				ExtractImage(product.Id.ToString(), _assetsDb.GetSharedTexture(product.IconPath));
 				DumpObject(product.Id.ToString(), product);
 			}
 			_jsonWriter.WriteEndArray();

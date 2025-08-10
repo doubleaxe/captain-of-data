@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 
 //https://github.com/mcshaz/BlowTrial/blob/master/GenericToDataFile/ObjectDumper.cs
-namespace CaptainOfData.dump
+namespace CaptainOfData.Dump
 {
 	//http://stackoverflow.com/questions/852181/c-printing-all-properties-of-an-object
 	internal class ObjectDumperTxtImpl

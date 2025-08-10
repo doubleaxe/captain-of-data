@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace CaptainOfData.dump
+namespace CaptainOfData.Dump
 {
 	internal static class TypeUtils
 	{
@@ -22,6 +22,13 @@ namespace CaptainOfData.dump
 				return true;
 			}
 			return false;
+		}
+		public static object GetOption(object option)
+		{
+			Type objectType = option.GetType();
+			PropertyInfo ValueOrNull = objectType.GetProperty("ValueOrNull");
+			object value = ValueOrNull.GetValue(option);
+			return value;
 		}
 	}
 
@@ -97,6 +104,17 @@ namespace CaptainOfData.dump
 
 		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
 		{
+			Type objectType = value.GetType();
+			if (TypeUtils.IsAnyType(objectType, typeof(Option<>)))
+			{
+				object _value = TypeUtils.GetOption(value);
+				if (_value == null)
+				{
+					writer.WriteNull();
+					return;
+				}
+				value = _value;
+			}
 			writer.WriteValue(value.ToString());
 		}
 	}
@@ -257,12 +275,6 @@ namespace CaptainOfData.dump
 				HideProps(properties, "AllUserVisibleInputs", "AllUserVisibleOutputs", "OutputsAtStart", "OutputsAtEnd");
 				return;
 			}
-			if (typeof(Mafi.Core.Factory.Recipes.RecipeProduct).IsAssignableFrom(objectType))
-			{
-				StringProps(properties, "Product");
-				return;
-			}
-
 		}
 
 		private static void StringProps(JsonPropertyCollection properties, params string[] names)
@@ -315,9 +327,7 @@ namespace CaptainOfData.dump
 						(objectType) => TypeUtils.IsAnyType(objectType, typeof(Option<>)),
 						(writer, value, serializer) =>
 						{
-							Type objectType = value.GetType();
-							PropertyInfo ValueOrNull = objectType.GetProperty("ValueOrNull");
-							object _value = ValueOrNull.GetValue(value);
+							object _value = TypeUtils.GetOption(value);
 							if(_value == null)
 							{
 								writer.WriteNull();

@@ -1,10 +1,12 @@
 
-using CaptainOfData.dump;
+using CaptainOfData.Dump;
+using CaptainOfData.Json;
 using Mafi;
 using Mafi.Core.Prototypes;
 using Mafi.Unity;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -12,6 +14,7 @@ namespace CaptainOfData
 {
 	internal abstract class DataExtractor : IDisposable
 	{
+		protected readonly string _baseFileName;
 		protected readonly DependencyResolver _resolver;
 		protected readonly ProtosDb _protosDb;
 		protected readonly AssetsDb _assetsDb;
@@ -28,6 +31,7 @@ namespace CaptainOfData
 
 		public DataExtractor(DependencyResolver resolver, ApplicationConfig settings, string baseFileName)
 		{
+			this._baseFileName = baseFileName;
 			this._resolver = resolver;
 			ProtosDb protosDb = resolver.Resolve<ProtosDb>();
 			AssetsDb assetsDb = resolver.Resolve<AssetsDb>();
@@ -36,9 +40,21 @@ namespace CaptainOfData
 			this._settings = settings;
 			this._fileWriter = new StreamWriter(Path.Combine(settings.OutputFolder, baseFileName + ".json"));
 			this._fileWriter.NewLine = "\n";
+
 			this._jsonWriter = new JsonTextWriter(this._fileWriter);
 			this._jsonWriter.Formatting = Formatting.Indented;
-			this._jsonSerializer = new JsonSerializer();
+			JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings
+			{
+				Converters = new List<JsonConverter>
+				{
+					new Fix32Converter(),
+					new PercentConverter(),
+					new LocStrConverter(),
+					new StringsConverter(),
+				}
+			};
+			this._jsonSerializer = JsonSerializer.Create(jsonSerializerSettings);
+
 			if (settings.DebugDump != null)
 			{
 				this._dumpWriter = new StreamWriter(Path.Combine(settings.OutputFolder, baseFileName + "-dump.txt"));
@@ -59,6 +75,19 @@ namespace CaptainOfData
 
 		public abstract void ExtractData();
 
+		protected void ExtractEnumerable<T>(IEnumerable<T> enumerable, Action<T> extractor)
+		{
+			_jsonWriter.WriteStartObject();
+			_jsonWriter.WritePropertyName(_baseFileName);
+			_jsonWriter.WriteStartArray();
+			foreach (T obj in enumerable)
+			{
+				extractor(obj);
+			}
+			_jsonWriter.WriteEndArray();
+			_jsonWriter.WriteEndObject();
+		}
+
 		protected void DumpObject(string name, object element)
 		{
 			if (_objectDumper != null)
@@ -67,7 +96,7 @@ namespace CaptainOfData
 			}
 		}
 
-		protected void DumpImage(string name, Texture2D image)
+		protected void ExtractImage(string name, Texture2D image)
 		{
 			byte[] bytes;
 			if (image.isReadable)

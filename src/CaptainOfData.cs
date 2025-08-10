@@ -42,6 +42,7 @@ namespace CaptainOfData
 			List<DataExtractor> extractors = new List<DataExtractor>();
 			extractors.Add(new ProductDataExtractor(resolver, config));
 			extractors.Add(new MachineDataExtractor(resolver, config));
+			extractors.Add(new ReactorDataExtractor(resolver, config));
 
 			foreach (DataExtractor extractor in extractors)
 			{

@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace CaptainOfData.dump
+namespace CaptainOfData.Dump
 {
 	public abstract class ObjectDumper : IDisposable
 	{
