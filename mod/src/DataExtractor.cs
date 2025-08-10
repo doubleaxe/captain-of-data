@@ -663,7 +663,7 @@ namespace DataExtractorMod
                 recipe_duration,
                 inputItems.JoinStrings(","),
                 outputItems.JoinStrings(","),
-                (recipe is RecipeProto) ? ((RecipeProto)recipe).PowerMultiplier.ToFix32().ToString() : "1"
+                (recipe is RecipeProto) ? ((RecipeProto)recipe).PowerMultiplier.ToDouble().ToString(System.Globalization.CultureInfo.InvariantCulture) : "1"
             );
             return machineRecipeJson;
         }

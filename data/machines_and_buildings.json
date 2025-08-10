@@ -8120,7 +8120,7 @@
                             "quantity": 2
                         }
                     ],
-                    "power_multiplier": 0.5996094
+                    "power_multiplier": 0.6
                 },
                 {
                     "id": "IronSmeltingArc",
@@ -8196,7 +8196,7 @@
                             "quantity": 2
                         }
                     ],
-                    "power_multiplier": 0.5996094
+                    "power_multiplier": 0.6
                 },
                 {
                     "id": "CopperSmeltingArc",
@@ -8310,7 +8310,7 @@
                             "quantity": 2
                         }
                     ],
-                    "power_multiplier": 0.5996094
+                    "power_multiplier": 0.6
                 },
                 {
                     "id": "SiliconSmeltingArc2",
@@ -8386,7 +8386,7 @@
                             "quantity": 2
                         }
                     ],
-                    "power_multiplier": 0.5996094
+                    "power_multiplier": 0.6
                 },
                 {
                     "id": "IlmeniteSmeltingArc2",
@@ -8510,7 +8510,7 @@
                             "quantity": 1
                         }
                     ],
-                    "power_multiplier": 0.5996094
+                    "power_multiplier": 0.6
                 },
                 {
                     "id": "IronSmeltingArcT1",
@@ -8570,7 +8570,7 @@
                             "quantity": 1
                         }
                     ],
-                    "power_multiplier": 0.5996094
+                    "power_multiplier": 0.6
                 },
                 {
                     "id": "CopperSmeltingArcT1",
@@ -8660,7 +8660,7 @@
                             "quantity": 1
                         }
                     ],
-                    "power_multiplier": 0.5996094
+                    "power_multiplier": 0.6
                 },
                 {
                     "id": "SiliconSmeltingArc",
@@ -8720,7 +8720,7 @@
                             "quantity": 1
                         }
                     ],
-                    "power_multiplier": 0.5996094
+                    "power_multiplier": 0.6
                 }
             ]
         },
@@ -9948,7 +9948,7 @@
                             "quantity": 3
                         }
                     ],
-                    "power_multiplier": 0.5996094
+                    "power_multiplier": 0.6
                 }
             ]
         },
