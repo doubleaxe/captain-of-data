@@ -316,7 +316,8 @@ namespace DataExtractorMod
             string name,
             string duration,
             string inputs,
-            string outputs
+            string outputs,
+            string power_multiplier
         )
         {
             System.Text.StringBuilder obj = new System.Text.StringBuilder();
@@ -328,6 +329,7 @@ namespace DataExtractorMod
             props.Add($"\"duration\":{duration}");
             props.Add($"\"inputs\":[{inputs}]");
             props.Add($"\"outputs\":[{outputs}]");
+            props.Add($"\"power_multiplier\":{power_multiplier}");
 
             obj.AppendLine("{");
             obj.AppendLine(props.JoinStrings(","));
@@ -660,7 +662,8 @@ namespace DataExtractorMod
                 recipe_name,
                 recipe_duration,
                 inputItems.JoinStrings(","),
-                outputItems.JoinStrings(",")
+                outputItems.JoinStrings(","),
+                (recipe is RecipeProto) ? ((RecipeProto)recipe).PowerMultiplier.ToFix32().ToString() : "1"
             );
             return machineRecipeJson;
         }
@@ -1458,7 +1461,8 @@ namespace DataExtractorMod
                                     crop.Strings.Name.ToString() + " " + fertilizer.Strings.Name.ToString(),
                                     duration.ToString(),
                                     inputItems2.JoinStrings(","),
-                                    outputItems.JoinStrings(",")
+                                    outputItems.JoinStrings(","),
+                                    "1"
                                 );
                                 recipeItems.Add(machineRecipeJson);
                             }
@@ -1470,7 +1474,8 @@ namespace DataExtractorMod
                                 crop.Strings.Name.ToString(),
                                 duration.ToString(),
                                 inputItems.JoinStrings(","),
-                                outputItems.JoinStrings(",")
+                                outputItems.JoinStrings(","),
+                                "1"
                             );
                             recipeItems.Add(machineRecipeJson);
                         }
@@ -1580,7 +1585,8 @@ namespace DataExtractorMod
                         name,
                         duration.ToString(),
                         inputItems.JoinStrings(","),
-                        outputItems.JoinStrings(",")
+                        outputItems.JoinStrings(","),
+                        "1"
                     );
                     recipeItems.Add(machineRecipeJson);
 
@@ -2133,7 +2139,8 @@ namespace DataExtractorMod
                             recipe_name,
                             recipe_duration,
                             inputItems.JoinStrings(","),
-                            outputItems.JoinStrings(",")
+                            outputItems.JoinStrings(","),
+                            "1"
                         );
                         recipeItems.Add(machineRecipeJson);
 
@@ -2637,7 +2644,8 @@ namespace DataExtractorMod
                                     recipe_name,
                                     recipe.Duration.Seconds.ToString(),
                                     inputItems.JoinStrings(","),
-                                    outputItems.JoinStrings(",")
+                                    outputItems.JoinStrings(","),
+                                    "1"
                                 );
 
                                 recipeItems.Add(machineRecipeJson);
@@ -2719,7 +2727,8 @@ namespace DataExtractorMod
                                         recipe_name,
                                         recipe.Duration.Seconds.ToString(),
                                         inputItems.JoinStrings(","),
-                                        outputItems.JoinStrings(",")
+                                        outputItems.JoinStrings(","),
+                                        "1"
                                     );
 
                                     recipeItems.Add(machineRecipeJson);
@@ -3016,7 +3025,8 @@ namespace DataExtractorMod
                         name,
                         "720",
                         "",
-                        machineRecipeOutputJson
+                        machineRecipeOutputJson,
+                        "1"
                     );
 
                     string machineJson = MakeMachineJsonObject(
@@ -3120,7 +3130,8 @@ namespace DataExtractorMod
                             recipe_name,
                             recipe_duration,
                             inputItems.JoinStrings(","),
-                            outputItems.JoinStrings(",")
+                            outputItems.JoinStrings(","),
+                            "1"
                         );
                         recipeItems.Add(machineRecipeJson);
                     }
