@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Data Extraction Mod
  * 
  * -------------------------------------
@@ -93,6 +93,7 @@
  */
 
 using Mafi;
+using Mafi.Base.Prototypes.Buildings.ThermalStorages;
 using Mafi.Base.Prototypes.Machines;
 using Mafi.Base.Prototypes.Machines.PowerGenerators;
 using Mafi.Collections.ImmutableCollections;
@@ -984,6 +985,83 @@ namespace DataExtractorMod
             */
 
             List<string> machineItems = new List<string> { };
+
+            // -------------------------
+            // Thermal Storages
+            // -------------------------
+
+            IEnumerable<ThermalStorageProto> thermalStorages = protosDb.All<ThermalStorageProto>();
+            foreach (ThermalStorageProto thermalStorage in thermalStorages)
+            {
+                try
+                {
+                    string id = thermalStorage.Id.ToString();
+                    string name = thermalStorage.Strings.Name.ToString();
+                    string category = "";
+                    string workers = thermalStorage.Costs.Workers.ToString();
+                    string maintenance_cost_units = thermalStorage.Costs.Maintenance.Product.Strings.Name.ToString();
+                    string maintenance_cost_quantity = thermalStorage.Costs.Maintenance.MaintenancePerMonth.Value.ToString();
+                    string electricity_consumed = thermalStorage.ElectricityConsumed.ToString();
+                    string electricity_generated = "0";
+                    string computing_consumed = "0";
+                    string computing_generated = "0";
+                    string product_type = thermalStorage.HeatProduct.Strings.Name.ToString();
+                    // Because the actual heat capacity changes based on what type of steam is being stored,
+                    //   this is being encoded as the quantity of selected steam type, that can be expended
+                    //   from a full thermal storage, because this is consistent between all steam types.
+                    string capacity = thermalStorage.Capacity.ToString();
+                    string unity_cost = "0";
+                    string research_speed = "0";
+                    string next_tier = "";
+
+                    foreach (ToolbarEntryData cat in thermalStorage.Graphics.Categories)
+                    {
+                        category = cat.CategoryProto.Strings.Name.ToString();
+                    }
+
+                    List<string> machinesProducts = new List<string> { };
+
+                    foreach (ProductQuantity cost in thermalStorage.Costs.Price.Products)
+                    {
+                        string vehicleProductJson = MakeVehicleProductJsonObject(
+                            cost.Product.Strings.Name.ToString(),
+                            cost.Quantity.ToString()
+                        );
+                        machinesProducts.Add(vehicleProductJson);
+                    }
+
+                    List<string> recipeItems = MakeRecipesJsonObject(protosDb, thermalStorage.Recipes.AsEnumerable());
+
+                    string machineJson = MakeMachineJsonObject2(
+                        id,
+                        name,
+                        category,
+                        next_tier,
+                        workers,
+                        maintenance_cost_units,
+                        maintenance_cost_quantity,
+                        electricity_consumed,
+                        electricity_generated,
+                        computing_consumed,
+                        computing_generated,
+                        product_type,
+                        capacity,
+                        unity_cost,
+                        research_speed,
+                        thermalStorage.IconPath,
+                        machinesProducts.JoinStrings(","),
+                        recipeItems.JoinStrings(",")
+                    );
+                    machineItems.Add(machineJson);
+
+                }
+                catch
+                {
+                    Log.Info("###################################################");
+                    Log.Info("ERROR" + thermalStorage.ToString());
+                    Log.Info("###################################################");
+                }
+            }
 
             // -------------------------
             // Turbines
